@@ -5577,7 +5577,7 @@ namespace chess
         return SquareSet(~this->_mask & BB_ALL);
     }
 
-    SquareSet::operator unsigned long int() const
+    SquareSet::operator unsigned long long int() const
     {
         return this->_mask;
     }

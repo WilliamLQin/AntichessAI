@@ -1018,7 +1018,7 @@ namespace chess
         included squares. Bitwise operations can be used to compute unions,
         intersections and shifts.
 
-        >>> std::cout << (unsigned long)(squares);
+        >>> std::cout << (unsigned long long)(squares);
         72057594037928191
 
         Also supports common set operations like
@@ -1127,7 +1127,7 @@ namespace chess
 
         SquareSet operator~() const;
 
-        operator unsigned long int() const;
+        operator unsigned long long int() const;
 
         operator std::string() const;
 
