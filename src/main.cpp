@@ -4,11 +4,11 @@
 const int MAX_DEPTH = 3;
 
 void traverse(int depth, chess::Board &board) {
+    std::cout << "DEPTH: " << depth << std::endl;
+    std::cout << std::string(board) << std::endl;
     if (depth >= MAX_DEPTH) {
         return;
     }
-    std::cout << "DEPTH: " << depth << std::endl;
-    std::cout << board.fen() << std::endl << std::endl;
     std::vector<chess::Move> moves = board.legal_moves();
     for (auto move : moves) {
         board.push(move);
