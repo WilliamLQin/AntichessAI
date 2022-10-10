@@ -20,6 +20,47 @@ void traverse(int depth, chess::Board &board) {
     }
 }
 
+void playerTurn(chess::Board& board) {
+    std::string input;
+    std::vector<chess::Move> moves;
+
+    moves = board.generate_legal_captures();
+    if (moves.empty()) {
+        moves = board.generate_legal_moves();
+    }
+
+    if (PRINT_INFO) {
+        std::cout << "Valid moves:";
+        for (auto move: moves) {
+            std::cout << " " << move.uci();
+        }
+        std::cout << std::endl;
+    }
+
+    bool found = false;
+    while(!found) {
+        if (PRINT_INFO) {
+            std::cout << "Your move: " << std::flush;
+        }
+        std::cin >> input;
+
+        try {
+            chess::Move playerMove = chess::Move::from_uci(input);
+
+            for (auto move : moves) {
+                if (move.uci() == playerMove.uci()) {
+                    board.push(playerMove);
+                    found = true;
+                }
+            }
+        } catch (...) {}
+
+        if (!found && PRINT_INFO) {
+            std::cout << "Invalid move." << std::endl;
+        }
+    }
+}
+
 void play_game() {
     chess::Board::captures_compulsory = true;
     chess::Board board;
@@ -32,7 +73,14 @@ void play_game() {
         std::cout << std::string(board) << std::endl << std::endl;
     }
 
-    while(true) {
+    std::cin >> input;
+
+    // player makes a move first
+    if (input == "black") {
+        playerTurn(board);
+    }
+
+    while(!board.is_game_over()) {
         // AI MOVE
         moves = board.generate_legal_captures();
         if (moves.empty()) {
@@ -56,45 +104,7 @@ void play_game() {
         }
 
         // PLAYER MOVE
-        moves = board.generate_legal_captures();
-        if (moves.empty()) {
-            moves = board.generate_legal_moves();
-        }
-
-        if (PRINT_INFO) {
-            std::cout << "Valid moves:";
-            for (auto move: moves) {
-                std::cout << " " << move.uci();
-            }
-            std::cout << std::endl;
-        }
-
-        bool found = false;
-        while(!found) {
-            if (PRINT_INFO) {
-                std::cout << "Your move: " << std::flush;
-            }
-            std::cin >> input;
-
-            try {
-                chess::Move playerMove = chess::Move::from_uci(input);
-
-                for (auto move : moves) {
-                    if (move.uci() == playerMove.uci()) {
-                        board.push(playerMove);
-                        found = true;
-                    }
-                }
-            } catch (...) {}
-
-            if (!found && PRINT_INFO) {
-                std::cout << "Invalid move." << std::endl;
-            }
-        }
-
-        if (board.is_game_over()) {
-            break;
-        }
+        playerTurn(board);
     }
 
     if (PRINT_INFO) {
