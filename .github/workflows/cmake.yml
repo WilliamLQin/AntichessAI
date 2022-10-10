@@ -57,5 +57,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: AntichessAI
-        path: AntichessAI
+        path: ${{github.workspace}}/build/AntichessAI
 
