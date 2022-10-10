@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
-#include "cpp-chess/chess.h"
+#include "cpp-chess/cppchess.h"
 
 const int MAX_DEPTH = 6;
 const bool PRINT_INFO = false;
