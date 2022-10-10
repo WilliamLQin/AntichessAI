@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <time.h>
 #include "cpp-chess/cppchess.h"
 
 const int MAX_DEPTH = 6;
@@ -98,7 +99,7 @@ void play_game() {
 }
 
 int main() {
-    srand(getpid());
+    srand(time(nullptr));
 
 //    std::cout << "Welcome to Antichess AI for CO 456" << std::endl;
 //    chess::Board board;
