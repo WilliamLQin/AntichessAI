@@ -22,7 +22,7 @@ void traverse(int depth, chess::Board &board) {
 
 void play_game() {
     chess::Board::captures_compulsory = true;
-    chess::Board board("1r3r2/7p/2k5/8/3K3p/8/p7/8 w - - 0 1");
+    chess::Board board;
 
     std::string input;
     std::vector<chess::Move> moves;
