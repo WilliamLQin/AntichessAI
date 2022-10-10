@@ -27,6 +27,11 @@ void play_game() {
     std::string input;
     std::vector<chess::Move> moves;
 
+    if (PRINT_INFO) {
+        std::cout << "Starting board:" << std::endl;
+        std::cout << std::string(board) << std::endl << std::endl;
+    }
+
     while(true) {
         // AI MOVE
         moves = board.generate_legal_captures();

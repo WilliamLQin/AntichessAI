@@ -56,6 +56,6 @@ jobs:
     - name: Archive build executable
       uses: actions/upload-artifact@v3
       with:
-        name: AntichessAI
+        name: antichessai-bin
         path: ${{github.workspace}}/build/AntichessAI
 
