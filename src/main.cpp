@@ -4,7 +4,7 @@
 #include "cpp-chess/chess.h"
 
 const int MAX_DEPTH = 6;
-const bool PRINT_INFO = true;
+const bool PRINT_INFO = false;
 
 void traverse(int depth, chess::Board &board) {
     std::cout << "DEPTH: " << depth << std::endl;
