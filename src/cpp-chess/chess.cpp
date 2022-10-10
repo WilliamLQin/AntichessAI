@@ -361,6 +361,10 @@ namespace chess
         return {mask_table, attack_table};
     }
 
+    const auto [BB_DIAG_MASKS, BB_DIAG_ATTACKS] = _attack_table({-9, -7, 7, 9});
+    const auto [BB_FILE_MASKS, BB_FILE_ATTACKS] = _attack_table({-8, 8});
+    const auto [BB_RANK_MASKS, BB_RANK_ATTACKS] = _attack_table({-1, 1});
+
     std::vector<std::vector<Bitboard>> _rays()
     {
         std::vector<std::vector<Bitboard>> rays;
@@ -392,6 +396,8 @@ namespace chess
         }
         return rays;
     }
+
+    const std::vector<std::vector<Bitboard>> BB_RAYS = _rays();
 
     Bitboard ray(Square a, Square b)
     {

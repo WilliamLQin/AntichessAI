@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include "cpp-chess/cppchess.h"
+#include "cpp-chess/chess.h"
 
 const int MAX_DEPTH = 6;
 const bool PRINT_INFO = false;
