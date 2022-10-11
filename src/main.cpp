@@ -4,7 +4,7 @@
 #include "cpp-chess/chess.h"
 
 const int MAX_DEPTH = 6;
-const bool PRINT_INFO = false;
+const bool CLI_MODE = false;
 
 void traverse(int depth, chess::Board &board) {
     std::cout << "DEPTH: " << depth << std::endl;
@@ -29,7 +29,7 @@ void playerTurn(chess::Board& board) {
         moves = board.generate_legal_moves();
     }
 
-    if (PRINT_INFO) {
+    if (CLI_MODE) {
         std::cout << "Valid moves:";
         for (auto move: moves) {
             std::cout << " " << move.uci();
@@ -39,7 +39,7 @@ void playerTurn(chess::Board& board) {
 
     bool found = false;
     while(!found) {
-        if (PRINT_INFO) {
+        if (CLI_MODE) {
             std::cout << "Your move: " << std::flush;
         }
         std::cin >> input;
@@ -55,11 +55,13 @@ void playerTurn(chess::Board& board) {
             }
         } catch (...) {}
 
-        if (!found && PRINT_INFO) {
-            std::cout << "Invalid move." << std::endl;
-        } else {
-            std::cout << "invalid" << std::endl;
-            exit(1);
+        if (!found) {
+            if (CLI_MODE) {
+                std::cout << "Invalid move." << std::endl;
+            } else {
+                std::cout << "invalid" << std::endl;
+                exit(1);
+            }
         }
     }
 }
@@ -71,7 +73,7 @@ void play_game() {
     std::string input;
     std::vector<chess::Move> moves;
 
-    if (PRINT_INFO) {
+    if (CLI_MODE) {
         std::cout << "Starting board:" << std::endl;
         std::cout << std::string(board) << std::endl << std::endl;
     }
@@ -93,12 +95,12 @@ void play_game() {
         int moveIndex = rand() % moves.size();
         board.push(moves[moveIndex]);
 
-        if (PRINT_INFO) {
+        if (CLI_MODE) {
             std::cout << "Computer plays: " << std::flush;
         }
         std::cout << std::string(moves[moveIndex]) << std::endl;
 
-        if (PRINT_INFO) {
+        if (CLI_MODE) {
             std::cout << std::endl << std::string(board) << std::endl << std::endl;
         }
 
@@ -110,7 +112,7 @@ void play_game() {
         playerTurn(board);
     }
 
-    if (PRINT_INFO) {
+    if (CLI_MODE) {
         std::cout << std::endl << "Game over!" << std::endl;
         std::cout << std::string(board) << std::endl;
     }
