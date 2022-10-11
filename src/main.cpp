@@ -4,8 +4,6 @@
 #include "cpp-chess/chess.h"
 #include "search/search.h"
 
-bool CLI_MODE = false;
-
 void playerTurn(chess::Board& board) {
     std::string input;
     std::vector<chess::Move> moves;
@@ -15,19 +13,19 @@ void playerTurn(chess::Board& board) {
         moves = board.generate_legal_moves();
     }
 
-    if (CLI_MODE) {
-        std::cout << "Valid moves:";
-        for (auto move: moves) {
-            std::cout << " " << move.uci();
-        }
-        std::cout << std::endl;
+#ifdef CLI_MODE
+    std::cout << "Valid moves:";
+    for (auto move: moves) {
+        std::cout << " " << move.uci();
     }
+    std::cout << std::endl;
+#endif
 
     bool found = false;
     while(!found) {
-        if (CLI_MODE) {
-            std::cout << "Your move: " << std::flush;
-        }
+#ifdef CLI_MODE
+        std::cout << "Your move: " << std::flush;
+#endif
         std::cin >> input;
 
         try {
@@ -42,12 +40,12 @@ void playerTurn(chess::Board& board) {
         } catch (...) {}
 
         if (!found) {
-            if (CLI_MODE) {
-                std::cout << "Invalid move." << std::endl;
-            } else {
-                std::cout << "invalid" << std::endl;
-                exit(1);
-            }
+#ifdef CLI_MODE
+            std::cout << "Invalid move." << std::endl;
+#else 
+            std::cout << "invalid" << std::endl;
+            exit(1);
+#endif
         }
     }
 }
@@ -60,16 +58,16 @@ void play_game() {
 
     std::string input;
 
-    if (CLI_MODE) {
-        std::cout << "Enter the AI's color: " << std::flush;
-    }
+#ifdef CLI_MODE
+    std::cout << "Enter the AI's color: " << std::flush;
+#endif
     
     std::cin >> input;
     
-    if (CLI_MODE) {
-        std::cout << std::endl << "Starting board:" << std::endl;
-        std::cout << std::string(board) << std::endl << std::endl;
-    }
+#ifdef CLI_MODE
+    std::cout << std::endl << "Starting board:" << std::endl;
+    std::cout << std::string(board) << std::endl << std::endl;
+#endif
     
     // player makes a move first
     if (input == "black") {
@@ -81,13 +79,13 @@ void play_game() {
         chess::Move ai_move = search.best_move();
         board.push(ai_move);
 
-        if (CLI_MODE) {
-            std::cout << "Computer plays: " << std::flush;
-        }
+#ifdef CLI_MODE
+        std::cout << "Computer plays: " << std::flush;
+#endif
         std::cout << std::string(ai_move) << std::endl;
-        if (CLI_MODE) {
-            std::cout << std::endl << std::string(board) << std::endl << std::endl;
-        }
+#ifdef CLI_MODE
+        std::cout << std::endl << std::string(board) << std::endl << std::endl;
+#endif
 
         if (board.is_game_over()) {
             break;
@@ -97,21 +95,18 @@ void play_game() {
         playerTurn(board);
     }
 
-    if (CLI_MODE) {
-        std::cout << std::endl << "Game over!" << std::endl;
-        std::cout << std::string(board) << std::endl;
-    }
+#ifdef CLI_MODE
+    std::cout << std::endl << "Game over!" << std::endl;
+    std::cout << std::string(board) << std::endl;
+#endif
 }
 
 int main(int argc, char** argv) {
     srand(time(nullptr));
 
-    if (argc > 1) {
-        if (strcmp(argv[1], "cli") == 0) {
-            CLI_MODE = true;
-            std::cout << "Welcome to the CO456 Antichess AI" << std::endl;
-        }
-    }
+#ifdef CLI_MODE
+    std::cout << "Welcome to the CO456 Antichess AI" << std::endl;
+#endif
     play_game();
 
     return 0;
