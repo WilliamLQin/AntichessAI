@@ -2,23 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include "cpp-chess/chess.h"
+#include "search/search.h"
 
-const int MAX_DEPTH = 6;
 const bool CLI_MODE = false;
-
-void traverse(int depth, chess::Board &board) {
-    std::cout << "DEPTH: " << depth << std::endl;
-    std::cout << std::string(board) << std::endl;
-    if (depth >= MAX_DEPTH) {
-        return;
-    }
-    std::vector<chess::Move> moves = board.legal_moves();
-    for (auto move : moves) {
-        board.push(move);
-        traverse(depth+1, board);
-        board.pop();
-    }
-}
 
 void playerTurn(chess::Board& board) {
     std::string input;
@@ -67,8 +53,10 @@ void playerTurn(chess::Board& board) {
 }
 
 void play_game() {
-    chess::Board::captures_compulsory = true;
+    chess::Board::captures_compulsory = true; // this doesn't actually do anything
     chess::Board board;
+
+    Search search(board);
 
     std::string input;
     std::vector<chess::Move> moves;
@@ -120,10 +108,6 @@ void play_game() {
 
 int main() {
     srand(time(nullptr));
-
-//    std::cout << "Welcome to Antichess AI for CO 456" << std::endl;
-//    chess::Board board;
-//    traverse(0, board);
 
     play_game();
 
