@@ -1,6 +1,5 @@
 #include "search.h"
 #include <vector>
-#include <iostream>
 
 chess::Move Search::best_move() {
     std::vector<chess::Move> moves;
