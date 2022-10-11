@@ -6,8 +6,8 @@
 class Search {
     chess::Board &board;
 public:
-    Search(chess::Board &b) : board(b) {};
+    explicit Search(chess::Board &b) : board(b) {};
+    chess::Move best_move();
 };
-
 
 #endif // SEARCH_H

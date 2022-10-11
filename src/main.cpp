@@ -1,10 +1,10 @@
 #include <iostream>
-#include <stdlib.h>
-#include <time.h>
+#include <string>
+#include <vector>
 #include "cpp-chess/chess.h"
 #include "search/search.h"
 
-const bool CLI_MODE = false;
+bool CLI_MODE = false;
 
 void playerTurn(chess::Board& board) {
     std::string input;
@@ -59,15 +59,18 @@ void play_game() {
     Search search(board);
 
     std::string input;
-    std::vector<chess::Move> moves;
 
     if (CLI_MODE) {
-        std::cout << "Starting board:" << std::endl;
+        std::cout << "Enter the AI's color: " << std::flush;
+    }
+    
+    std::cin >> input;
+    
+    if (CLI_MODE) {
+        std::cout << std::endl << "Starting board:" << std::endl;
         std::cout << std::string(board) << std::endl << std::endl;
     }
-
-    std::cin >> input;
-
+    
     // player makes a move first
     if (input == "black") {
         playerTurn(board);
@@ -75,19 +78,13 @@ void play_game() {
 
     while(!board.is_game_over()) {
         // AI MOVE
-        moves = board.generate_legal_captures();
-        if (moves.empty()) {
-            moves = board.generate_legal_moves();
-        }
-
-        int moveIndex = rand() % moves.size();
-        board.push(moves[moveIndex]);
+        chess::Move ai_move = search.best_move();
+        board.push(ai_move);
 
         if (CLI_MODE) {
             std::cout << "Computer plays: " << std::flush;
         }
-        std::cout << std::string(moves[moveIndex]) << std::endl;
-
+        std::cout << std::string(ai_move) << std::endl;
         if (CLI_MODE) {
             std::cout << std::endl << std::string(board) << std::endl << std::endl;
         }
@@ -106,9 +103,15 @@ void play_game() {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     srand(time(nullptr));
 
+    if (argc > 1) {
+        if (strcmp(argv[1], "cli") == 0) {
+            CLI_MODE = true;
+            std::cout << "Welcome to the CO456 Antichess AI" << std::endl;
+        }
+    }
     play_game();
 
     return 0;
