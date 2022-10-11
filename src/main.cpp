@@ -57,6 +57,9 @@ void playerTurn(chess::Board& board) {
 
         if (!found && PRINT_INFO) {
             std::cout << "Invalid move." << std::endl;
+        } else {
+            std::cout << "invalid" << std::end;
+            exit(1);
         }
     }
 }
