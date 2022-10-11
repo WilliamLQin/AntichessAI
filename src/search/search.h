@@ -7,7 +7,7 @@ class Search {
     chess::Board &board;
 public:
     Search(chess::Board &b) : board(b) {};
-}
+};
 
 
 #endif // SEARCH_H
