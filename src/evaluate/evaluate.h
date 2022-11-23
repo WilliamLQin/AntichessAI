@@ -6,12 +6,16 @@
 #define ANTICHESSAI_EVALUATE_H
 
 #include "../cpp-chess/chess.h"
+#include <limits.h>
 
 class Evaluate {
     chess::Board &board;
 public:
     explicit Evaluate(chess::Board &b) : board(b) {};
     int evaluate(chess::Color);
+private:
+    int material(bool &is_endgame);
+    int mobility(const bool &is_endgame);
 };
 
 #endif //ANTICHESSAI_EVALUATE_H

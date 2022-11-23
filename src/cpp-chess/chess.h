@@ -31,6 +31,14 @@ and XBoard/UCI engine communication.
 #include <array>
 #include <iterator>
 
+#ifndef EVAL_MAX
+#define EVAL_MAX 100000000
+#endif
+
+#ifndef EVAL_MIN
+#define EVAL_MIN -100000000
+#endif
+
 namespace chess
 {
     typedef std::string _EnPassantSpec;
