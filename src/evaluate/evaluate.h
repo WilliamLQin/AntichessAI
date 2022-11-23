@@ -13,6 +13,9 @@ class Evaluate {
 public:
     explicit Evaluate(chess::Board &b) : board(b) {};
     int evaluate(chess::Color);
+private:
+    int material();
+    int mobility();
 };
 
 #endif //ANTICHESSAI_EVALUATE_H

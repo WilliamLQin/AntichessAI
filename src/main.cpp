@@ -3,6 +3,7 @@
 #include <vector>
 #include "cpp-chess/chess.h"
 #include "search/search.h"
+#include "evaluate/evaluate.h"
 
 void playerTurn(chess::Board& board) {
     std::string input;
@@ -59,6 +60,7 @@ void play_game() {
     std::string input;
 
 #ifdef CLI_MODE
+    Evaluate evaluator(board);
     std::cout << "Enter the AI's color: " << std::flush;
 #endif
     
@@ -74,7 +76,7 @@ void play_game() {
         playerTurn(board);
     }
 
-    while(!board.is_game_over()) {
+    while(!board.is_game_over(true)) {
         // AI MOVE
         chess::Move ai_move = search.best_move();
         board.push(ai_move);
@@ -85,6 +87,7 @@ void play_game() {
         std::cout << std::string(ai_move) << std::endl;
 #ifdef CLI_MODE
         std::cout << std::endl << std::string(board) << std::endl << std::endl;
+        std::cout << "Evaluation: " << evaluator.evaluate(chess::WHITE) << std::endl;
 #endif
 
         if (board.is_game_over()) {
