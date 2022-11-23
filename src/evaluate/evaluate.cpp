@@ -6,7 +6,7 @@
 
 // convention: black evaluates to negative in sub-methods until return in final evaluate
 
-int Evaluate::material() {
+int Evaluate::material(bool &is_endgame) {
     int ret = 0;
 
     std::vector<chess::Square> wp = board.pieces(chess::PAWN, chess::WHITE);
@@ -22,22 +22,29 @@ int Evaluate::material() {
     std::vector<chess::Square> wk = board.pieces(chess::KING, chess::WHITE);
     std::vector<chess::Square> bk = board.pieces(chess::KING, chess::BLACK);
     
-    ret += wp.size() * 10;
-    ret += wb.size() * 29;
-    ret += wn.size() * 31;
-    ret += wr.size() * 50;
-    ret += wq.size() * 90;
-    
-    ret -= bp.size() * 10;
-    ret -= bb.size() * 29;
-    ret -= bn.size() * 31;
-    ret -= br.size() * 50;
-    ret -= bq.size() * 90;
+    int white_material = 0;
 
+    white_material += wp.size() * 100;
+    white_material += wb.size() * 300;
+    white_material += wn.size() * 310;
+    white_material += wr.size() * 500;
+    white_material += wq.size() * 900;
+
+    int black_material = 0;
+    
+    black_material += bp.size() * 100;
+    black_material += bb.size() * 300;
+    black_material += bn.size() * 310;
+    black_material += br.size() * 500;
+    black_material += bq.size() * 900;
+
+    is_endgame = white_material <= 1300 && black_material <= 1300;
+
+    ret = white_material - black_material;
     return ret;
 }
 
-int Evaluate::mobility() {
+int Evaluate::mobility(const bool &is_endgame) {
     chess::Bitboard not_pawn_squares = chess::BB_ALL & ~board.pawns;
 
     int ret = 0;
@@ -46,14 +53,15 @@ int Evaluate::mobility() {
     board.turn = chess::WHITE;
     std::vector<chess::Move> white_moves = board.generate_pseudo_legal_moves(not_pawn_squares);
 
-    // TODO: adjust mobility weight of 0.5
-    ret -= 0.5 * white_moves.size();
+    // TODO: adjust mobility weight of 5
+    int mobility_weight = is_endgame ? 5 : -5;
+
+    ret += mobility_weight * white_moves.size();
 
     board.turn = chess::BLACK;
     std::vector<chess::Move> black_moves = board.generate_pseudo_legal_moves(not_pawn_squares);
 
-    // TODO: adjust mobility weight of 0.5
-    ret += 0.5 * black_moves.size();
+    ret -= mobility_weight * black_moves.size();
 
     board.turn = prev_turn;
 
@@ -86,8 +94,10 @@ int Evaluate::evaluate(chess::Color color) {
         return 0;
     }
 
-    int ret = material();
-    ret += mobility();
+    // rest of evaluate 
+    bool is_endgame = false;
+    int ret = material(is_endgame);
+    ret += mobility(is_endgame);
     
     return ret * (color == chess::WHITE ? 1 : -1);
 }

@@ -14,8 +14,8 @@ public:
     explicit Evaluate(chess::Board &b) : board(b) {};
     int evaluate(chess::Color);
 private:
-    int material();
-    int mobility();
+    int material(bool &is_endgame);
+    int mobility(const bool &is_endgame);
 };
 
 #endif //ANTICHESSAI_EVALUATE_H
