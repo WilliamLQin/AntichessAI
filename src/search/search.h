@@ -5,12 +5,14 @@
 #include "../evaluate/evaluate.h"
 #include <vector>
 
-class Search {
+class Search
+{
     chess::Board &board;
     Evaluate eval;
-    int negamax(int depth);
+    int negamax(int depth, int current_eval);
+
 public:
-    explicit Search(chess::Board &b) : board(b), eval(b) {};
+    explicit Search(chess::Board &b) : board(b), eval(b){};
     chess::Move best_move();
 };
 
