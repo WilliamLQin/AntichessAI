@@ -8,13 +8,21 @@ int Evaluate::evaluate(chess::Color color) {
     
     // checkmate
     if (this->board.is_checkmate()) {
-        return INT_MIN;
-    }
-    else {
-        this->board.turn = !this->board.turn;
-        if (this->board.is_checkmate()) {
-            this->board.turn = !this->board.turn;
-            return INT_MAX;
+        if (this->board.turn == chess::WHITE) {
+            if (color == chess::WHITE) {
+                return INT_MIN;
+            }
+            else {
+                return INT_MAX;
+            }
+        }
+        else {
+            if (color == chess::WHITE) {
+                return INT_MAX;
+            }
+            else {
+                return INT_MIN;
+            }
         }
     }
 
