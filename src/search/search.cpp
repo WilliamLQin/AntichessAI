@@ -57,11 +57,6 @@ int Search::negamax(int depth)
         board.push(move);
         if (moves_are_capture)
         {
-            std::cout << "hasCapture" << std::endl;
-        }
-
-        if (moves_are_capture)
-        {
             int score = -negamax(depth);
         }
         else
