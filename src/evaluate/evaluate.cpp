@@ -5,9 +5,22 @@
 #include "evaluate.h"
 
 int Evaluate::evaluate(chess::Color color) {
-    // count material
-    int ret = 0;
     
+    // checkmate
+    if (this->board.is_checkmate()) {
+        return INT_MIN;
+    }
+    else {
+        this->board.turn = !this->board.turn;
+        if (this->board.is_checkmate()) {
+            this->board.turn = !this->board.turn;
+            return INT_MAX;
+        }
+    }
+
+    // else, count material
+    int ret = 0;
+
     std::vector<chess::Square> wp = board.pieces(chess::PAWN, chess::WHITE);
     std::vector<chess::Square> bp = board.pieces(chess::PAWN, chess::BLACK);
     std::vector<chess::Square> wb = board.pieces(chess::BISHOP, chess::WHITE);

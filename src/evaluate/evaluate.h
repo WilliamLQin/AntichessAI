@@ -6,6 +6,7 @@
 #define ANTICHESSAI_EVALUATE_H
 
 #include "../cpp-chess/chess.h"
+#include <limits.h>
 
 class Evaluate {
     chess::Board &board;
