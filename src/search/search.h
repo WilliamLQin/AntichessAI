@@ -9,7 +9,7 @@ class Search
 {
     chess::Board &board;
     Evaluate eval;
-    int negamax(int depth, int current_eval);
+    int negamax(int counter, int depth);
 
 public:
     explicit Search(chess::Board &b) : board(b), eval(b){};

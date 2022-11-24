@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include "cpp-chess/chess.h"
@@ -87,7 +88,7 @@ void play_game() {
         std::cout << std::string(ai_move) << std::endl;
 #ifdef CLI_MODE
         std::cout << std::endl << std::string(board) << std::endl << std::endl;
-        std::cout << "Evaluation: " << evaluator.evaluate(chess::WHITE) << std::endl;
+        std::cout << std::fixed << std::setprecision(2) << "Evaluation: " << float(evaluator.evaluate(chess::WHITE)) / 100.0 << std::endl;
 #endif
 
         if (board.is_game_over()) {
