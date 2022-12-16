@@ -66,9 +66,14 @@ int Search::negamax(int counter, int depth)
         moves = board.generate_legal_moves();
     }
 
+    // eval.evaluate(board.turn) => evaluation at current node
+
     for (auto &move : moves)
     {
         board.push(move);
+
+        // eval.evaluate(board.turn) => evaluation at child node
+
 #ifdef DEBUG
         std::cout << move.uci() << " " << counter << " ";
 #endif
