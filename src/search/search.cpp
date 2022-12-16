@@ -1,6 +1,6 @@
 #include "search.h"
-#include <vector>
 #include <iostream>
+#include <vector>
 
 chess::Move Search::best_move()
 {
@@ -8,19 +8,24 @@ chess::Move Search::best_move()
 
     // negamax search
     int moveIndex = 0;
-    int bestEval = -9999999;
+    int bestEval = EVAL_MIN;
+    int searchCounter = 2;
 
     moves = board.generate_legal_captures();
 
     if (moves.empty())
     {
         moves = board.generate_legal_moves();
+        searchCounter -= 1;
     }
 
     for (int i = 0; i < moves.size(); i++)
     {
         board.push(moves[i]);
-        int val = -negamax(2);
+#ifdef DEBUG
+        std::cout << std::endl << "Searchinag move " << moves[i].uci() << std::endl;
+#endif
+        int val = -negamax(searchCounter, 1);
 
         if (val > bestEval)
         {
@@ -34,16 +39,19 @@ chess::Move Search::best_move()
 }
 
 // simple dfs negamax algorithm, pretty inefficient
-int Search::negamax(int depth)
+int Search::negamax(int counter, int depth)
 {
-    int max = -99999999;
+    if (counter == 0) {
+        int value = eval.evaluate(board.turn);
+#ifdef DEBUG
+        std::cout << value << std::endl;
+#endif
+        return value;
+    }
+
+    int max = EVAL_MIN;
     std::vector<chess::Move> moves = board.generate_legal_captures();
     bool moves_are_capture = true;
-
-    if (depth == 0)
-    {
-        return eval.evaluate(board.turn);
-    }
 
     if (moves.empty())
     {
@@ -54,15 +62,24 @@ int Search::negamax(int depth)
     for (auto &move : moves)
     {
         board.push(move);
-        if (moves_are_capture)
+#ifdef DEBUG
+        std::cout << move.uci() << " ";
+#endif
+        int score = 0;
+        if (moves_are_capture || board.is_check())
         {
-            int score = -negamax(depth);
+            score = -negamax(counter, depth + 1);
         }
         else
         {
-            int score = -negamax(depth - 1);
+            score = -negamax(counter - 1, depth + 1);
+        }
+        if (score > max) {
+            max = score;
         }
         board.pop();
     }
     return max;
 }
+
+// std::cout << std::endl << std::string(board) << std::endl;
