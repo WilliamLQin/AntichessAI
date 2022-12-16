@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="AntichessAI" targetName="AntichessAI" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCLI_MODE=OFF -DLICHESS_MODE=OFF" />
+      <configuration PROFILE_NAME="CLI Mode" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCLI_MODE=ON -DLICHESS_MODE=OFF" />
+      <configuration PROFILE_NAME="Lichess Mode" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCLI_MODE=OFF -DLICHESS_MODE=ON" />
+      <configuration PROFILE_NAME="Lichess CLI Mode" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCLI_MODE=ON -DLICHESS_MODE=ON" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f9c61dd5-4509-4c71-971a-fb4c507be564" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/search/search.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/search/search.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Lichess CLI Mode" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="AntichessAI" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="AntichessAI" TARGET_NAME="AntichessAI" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="AntichessAI" RUN_TARGET_NAME="AntichessAI">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f9c61dd5-4509-4c71-971a-fb4c507be564" name="Changes" comment="" />
+      <created>1665345875559</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1665345875559</updated>
+      <workItem from="1665345877885" duration="677000" />
+      <workItem from="1665418306210" duration="8646000" />
+      <workItem from="1665460097510" duration="54000" />
+      <workItem from="1665461276725" duration="10278000" />
+      <workItem from="1669227615079" duration="4096000" />
+      <workItem from="1669235219638" duration="797000" />
+      <workItem from="1669245403784" duration="4069000" />
+      <workItem from="1671226077377" duration="3106000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

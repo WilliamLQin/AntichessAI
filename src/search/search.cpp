@@ -9,14 +9,13 @@ chess::Move Search::best_move()
     // negamax search
     int moveIndex = 0;
     int bestEval = EVAL_MIN;
-    int searchCounter = 2;
+    int searchCounter = 2; // search 2 ply
 
     moves = board.generate_legal_captures();
 
     if (moves.empty())
     {
         moves = board.generate_legal_moves();
-        searchCounter -= 1;
     }
 
     for (int i = 0; i < moves.size(); i++)
@@ -25,7 +24,7 @@ chess::Move Search::best_move()
 #ifdef DEBUG
         std::cout << std::endl << "Searchinag move " << moves[i].uci() << std::endl;
 #endif
-        int val = -negamax(searchCounter, 1);
+        int val = -negamax(searchCounter - 1, 1);
 
         if (val > bestEval)
         {
@@ -41,7 +40,7 @@ chess::Move Search::best_move()
 // simple dfs negamax algorithm, pretty inefficient
 int Search::negamax(int counter, int depth)
 {
-    if (counter == 0) {
+    if (counter <= -10) {
         int value = eval.evaluate(board.turn);
 #ifdef DEBUG
         std::cout << value << std::endl;
@@ -51,11 +50,19 @@ int Search::negamax(int counter, int depth)
 
     int max = EVAL_MIN;
     std::vector<chess::Move> moves = board.generate_legal_captures();
-    bool moves_are_capture = true;
 
     if (moves.empty())
     {
-        moves_are_capture = false;
+        if (!board.is_check()) // not a forced move
+        {
+            if (counter <= 0) {
+                int value = eval.evaluate(board.turn);
+#ifdef DEBUG
+                std::cout << value << std::endl;
+#endif
+                return value;
+            }
+        }
         moves = board.generate_legal_moves();
     }
 
@@ -63,17 +70,9 @@ int Search::negamax(int counter, int depth)
     {
         board.push(move);
 #ifdef DEBUG
-        std::cout << move.uci() << " ";
+        std::cout << move.uci() << " " << counter << " ";
 #endif
-        int score = 0;
-        if (moves_are_capture || board.is_check())
-        {
-            score = -negamax(counter, depth + 1);
-        }
-        else
-        {
-            score = -negamax(counter - 1, depth + 1);
-        }
+        int score = -negamax(counter - 1, depth + 1);
         if (score > max) {
             max = score;
         }
