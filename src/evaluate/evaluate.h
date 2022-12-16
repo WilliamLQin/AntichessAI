@@ -16,6 +16,7 @@ public:
 private:
     int material(bool &is_endgame);
     int mobility(const bool &is_endgame);
+    int piece_positions();
 };
 
 #endif //ANTICHESSAI_EVALUATE_H
