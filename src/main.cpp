@@ -52,7 +52,7 @@ void playerTurn(chess::Board& board) {
     }
 }
 
-void play_game() {
+void play_game(std::string cli_input) {
     chess::Board::captures_compulsory = true; // this doesn't actually do anything
     chess::Board board;
 
@@ -62,10 +62,20 @@ void play_game() {
 
 #ifdef CLI_MODE
     Evaluate evaluator(board);
-    std::cout << "Enter the AI's color: " << std::flush;
 #endif
-    
-    std::cin >> input;
+
+    if (cli_input.empty()) {
+#ifdef CLI_MODE
+        std::cout << "Enter the AI's color: " << std::flush;
+#endif
+        std::cin >> input;
+    }
+    else {
+#ifdef CLI_MODE
+        std::cout << "Received color " << cli_input << " from command line." << std::endl;
+#endif
+        input = cli_input;
+    }
     
 #ifdef CLI_MODE
     std::cout << std::endl << "Starting board:" << std::endl;
@@ -111,7 +121,18 @@ int main(int argc, char** argv) {
 #ifdef CLI_MODE
     std::cout << "Welcome to the CO456 Antichess AI" << std::endl;
 #endif
-    play_game();
+
+#ifdef LICHESS_MODE
+    std::string cli_input("");
+#else
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " ai_color" << std::endl;
+        exit(1);
+    }
+    std::string cli_input(argv[1]);
+#endif
+
+    play_game(cli_input);
 
     return 0;
 }

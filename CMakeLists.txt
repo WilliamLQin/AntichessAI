@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_CXX_STANDARD 20)
 option(CLI_MODE "use cli mode")
+option(LICHESS_MODE "pass ai color as first line of input (for lichess-bot)")
 project(AntichessAI)
 
 add_executable(${PROJECT_NAME} 
@@ -11,4 +12,7 @@ add_executable(${PROJECT_NAME}
 )
 if(CLI_MODE)
     target_compile_definitions(${PROJECT_NAME} PRIVATE CLI_MODE)
+endif()
+if(LICHESS_MODE)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE LICHESS_MODE)
 endif()
