@@ -36,7 +36,6 @@ chess::Move Search::best_move()
 // simple dfs negamax algorithm, pretty inefficient
 int Search::negamax(int depth)
 {
-    std::cout << depth;
     int max = -99999999;
     std::vector<chess::Move> moves = board.generate_legal_captures();
     bool moves_are_capture = true;
