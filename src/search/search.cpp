@@ -38,7 +38,7 @@ chess::Move Search::best_move()
 }
 
 // DFS negamax
-// with full search of forced moves (capture or check)
+// with "full" search of forced moves (capture or check)
 int Search::negamax(int counter, int depth)
 {
     // Search hard stop: forced move search depth exceeded or game over

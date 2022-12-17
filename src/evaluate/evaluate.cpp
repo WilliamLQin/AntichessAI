@@ -70,27 +70,24 @@ int Evaluate::mobility(const bool &is_endgame) {
 
 int Evaluate::evaluate(chess::Color color) {
     
-    // checkmate
-    if (board.is_checkmate()) {
-        if (board.turn == chess::WHITE) {
-            if (color == chess::WHITE) {
-                return EVAL_MIN;
-            }
-            else {
-                return EVAL_MAX;
+    // game over
+    if (board.is_game_over(true)) {
+        if (board.is_checkmate()) {
+            if (board.turn == chess::WHITE) {
+                if (color == chess::WHITE) {
+                    return EVAL_MIN;
+                } else {
+                    return EVAL_MAX;
+                }
+            } else {
+                if (color == chess::WHITE) {
+                    return EVAL_MAX;
+                } else {
+                    return EVAL_MIN;
+                }
             }
         }
-        else {
-            if (color == chess::WHITE) {
-                return EVAL_MAX;
-            }
-            else {
-                return EVAL_MIN;
-            }
-        }
-    }
-    // stalemate
-    if (board.is_stalemate()) {
+        // draw
         return 0;
     }
 
