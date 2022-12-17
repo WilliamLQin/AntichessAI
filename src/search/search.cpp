@@ -12,17 +12,17 @@ chess::Move Search::best_move()
     int searchCounter = 2; // search 2 ply
 
     moves = board.generate_legal_captures();
-
     if (moves.empty())
     {
         moves = board.generate_legal_moves();
     }
 
+    // look through each move and find the one with the best score
     for (int i = 0; i < moves.size(); i++)
     {
         board.push(moves[i]);
 #ifdef DEBUG
-        std::cout << std::endl << "Searchinag move " << moves[i].uci() << std::endl;
+        std::cout << std::endl << "Searching move " << moves[i].uci() << std::endl;
 #endif
         int val = -negamax(searchCounter - 1, 1);
 
@@ -37,10 +37,11 @@ chess::Move Search::best_move()
     return moves[moveIndex];
 }
 
-// simple dfs negamax algorithm, pretty inefficient
+// dfs negamax
+// with full search of forced moves (capture or check)
 int Search::negamax(int counter, int depth)
 {
-    if (counter <= -10) {
+    if (counter <= -10 || board.is_game_over(true)) {
         int value = eval.evaluate(board.turn);
 #ifdef DEBUG
         std::cout << value << std::endl;

@@ -101,7 +101,7 @@ void play_game(std::string cli_input) {
         std::cout << std::fixed << std::setprecision(2) << "Evaluation: " << float(evaluator.evaluate(chess::WHITE)) / 100.0 << std::endl;
 #endif
 
-        if (board.is_game_over()) {
+        if (board.is_game_over(true)) {
             break;
         }
 

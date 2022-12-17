@@ -12,7 +12,7 @@ class Search
     int negamax(int counter, int depth);
 
 public:
-    explicit Search(chess::Board &b) : board(b), eval(b){};
+    explicit Search(chess::Board &b) : board(b), eval(b) {};
     chess::Move best_move();
 };
 
