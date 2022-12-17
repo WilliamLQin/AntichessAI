@@ -37,10 +37,11 @@ chess::Move Search::best_move()
     return moves[moveIndex];
 }
 
-// dfs negamax
+// DFS negamax
 // with full search of forced moves (capture or check)
 int Search::negamax(int counter, int depth)
 {
+    // Search hard stop: forced move search depth exceeded or game over
     if (counter <= -10 || board.is_game_over(true)) {
         int value = eval.evaluate(board.turn);
 #ifdef DEBUG
@@ -49,40 +50,48 @@ int Search::negamax(int counter, int depth)
         return value;
     }
 
-    int max = EVAL_MIN;
+    // check if there are any forced captures
     std::vector<chess::Move> moves = board.generate_legal_captures();
-
-    if (moves.empty())
+    if (moves.empty()) // no forced captures
     {
-        if (!board.is_check()) // not a forced move
+        // no forced captures && not check => not forced move
+        // counter <= 0 so search depth reached, stop
+        if (!board.is_check() && counter <= 0)
         {
-            if (counter <= 0) {
-                int value = eval.evaluate(board.turn);
+            int value = eval.evaluate(board.turn);
 #ifdef DEBUG
-                std::cout << value << std::endl;
+            std::cout << value << std::endl;
 #endif
-                return value;
-            }
+            return value;
         }
+
+        // if didn't stop, move set is all legal moves
         moves = board.generate_legal_moves();
     }
 
-    // eval.evaluate(board.turn) => evaluation at current node
+    // To get evaluation at current node, run this line of code outside play/unplay move
+    // eval.evaluate(board.turn)
 
+    // DFS backtrack search: play move, recurse, unplay move
+    int max = EVAL_MIN;
     for (auto &move : moves)
     {
-        board.push(move);
+        board.push(move); // play move
 
-        // eval.evaluate(board.turn) => evaluation at child node
+        // To get evaluation at a child node, run this line of code between play/unplay move:
+        // eval.evaluate(board.turn)
 
 #ifdef DEBUG
         std::cout << move.uci() << " " << counter << " ";
 #endif
+        // recurse
         int score = -negamax(counter - 1, depth + 1);
+        // reevaluate variables
         if (score > max) {
             max = score;
         }
-        board.pop();
+
+        board.pop(); // un play move
     }
     return max;
 }
