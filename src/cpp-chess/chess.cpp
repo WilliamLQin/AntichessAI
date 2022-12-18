@@ -2325,11 +2325,12 @@ namespace chess
         // Claimable draws.
         if (claim_draw)
         {
-            if (this->can_claim_fifty_moves())
+            // Modified to just check if the claimable draw state has been reached
+            if (this->is_fifty_moves())
             {
                 return Outcome(Termination::FIFTY_MOVES, std::nullopt);
             }
-            if (this->can_claim_threefold_repetition())
+            if (this->is_repetition(3))
             {
                 return Outcome(Termination::THREEFOLD_REPETITION, std::nullopt);
             }
@@ -2509,7 +2510,17 @@ namespace chess
         {
             size_t operator()(const std::tuple<Bitboard, Bitboard, Bitboard, Bitboard, Bitboard, Bitboard, Bitboard, Bitboard, Color, Bitboard, Square> &key) const
             {
-                return std::hash<Bitboard>()(std::get<0>(key)) ^ std::hash<Bitboard>()(std::get<1>(key)) ^ std::hash<Bitboard>()(std::get<2>(key)) ^ std::hash<Bitboard>()(std::get<3>(key)) ^ std::hash<Bitboard>()(std::get<4>(key)) ^ std::hash<Bitboard>()(std::get<5>(key)) ^ std::hash<Bitboard>()(std::get<6>(key)) ^ std::hash<Bitboard>()(std::get<7>(key)) ^ std::hash<Color>()(std::get<8>(key)) ^ std::hash<Bitboard>()(std::get<9>(key)) ^ std::hash<Square>()(std::get<10>(key));
+                return std::hash<Bitboard>()(std::get<0>(key))
+                        ^ std::hash<Bitboard>()(std::get<1>(key))
+                        ^ std::hash<Bitboard>()(std::get<2>(key))
+                        ^ std::hash<Bitboard>()(std::get<3>(key))
+                        ^ std::hash<Bitboard>()(std::get<4>(key))
+                        ^ std::hash<Bitboard>()(std::get<5>(key))
+                        ^ std::hash<Bitboard>()(std::get<6>(key))
+                        ^ std::hash<Bitboard>()(std::get<7>(key))
+                        ^ std::hash<Color>()(std::get<8>(key))
+                        ^ std::hash<Bitboard>()(std::get<9>(key))
+                        ^ std::hash<Square>()(std::get<10>(key));
             }
         };
 
