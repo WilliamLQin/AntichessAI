@@ -21,13 +21,13 @@ void Timer::endTurn() {
 #endif
 }
 
-void Timer::checkOutOfTime() {
+void Timer::checkOutOfTime(int depth) {
     std::chrono::steady_clock::time_point time = std::chrono::steady_clock::now();
     std::chrono::milliseconds diff =
             std::chrono::duration_cast<std::chrono::milliseconds>(time - startTime);
 
     if (diff + LEEWAY_TIME > TIME_PER_TURN) {
-        throw OutOfTime();
+        throw OutOfTime(depth);
     }
 }
 

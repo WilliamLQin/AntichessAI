@@ -15,12 +15,16 @@ class Timer {
     std::chrono::milliseconds usedTime;
     std::chrono::steady_clock::time_point startTime;
 public:
-    class OutOfTime : public std::exception {};
+    class OutOfTime : public std::exception {
+    public:
+        int depth;
+        explicit OutOfTime(int depth) : depth(depth) {}
+    };
 
     explicit Timer() : usedTime(0) {};
     void startTurn();
     void endTurn();
-    void checkOutOfTime();
+    void checkOutOfTime(int depth);
     double getUsedTime();
 };
 

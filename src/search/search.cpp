@@ -50,7 +50,10 @@ chess::Move Search::best_move()
             bestMove = iterBestIndex;
         }
     } catch (const Timer::OutOfTime& e) {
-        // do nothing, we simply want to break out
+        // pop all moves
+        for (int i = 0; i < e.depth; i += 1) {
+            board.pop();
+        }
     }
 
      return moves[bestMove];
@@ -60,7 +63,7 @@ chess::Move Search::best_move()
 // with "full" search of forced moves (capture or check)
 int Search::negamax(int counter, int depth)
 {
-    timer.checkOutOfTime();
+    timer.checkOutOfTime(depth);
 
     // Search hard stop: forced move search depth exceeded or game over
     if (counter <= -10 || board.is_game_over(true)) {
