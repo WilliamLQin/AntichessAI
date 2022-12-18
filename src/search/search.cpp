@@ -120,7 +120,7 @@ int Search::alphaBeta(int counter, int depth, int alpha, int beta)
         std::cout << move.uci() << " " << counter << " ";
 #endif
         // recurse
-        int childScore = -alphaBeta(counter - 1, depth + 1, -alpha, -beta);
+        int childScore = -alphaBeta(counter - 1, depth + 1, -beta, -alpha);
         // reevaluate variables
         if (childScore >= beta)
         {
