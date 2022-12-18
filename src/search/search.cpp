@@ -54,6 +54,16 @@ chess::Move Search::best_move()
 
             // only update best move if entire level searched
             bestMove = iterBestIndex;
+
+#ifdef DEBUG
+            std::cout << "best eval for level " << level << ": " << iterBestEval << std::endl;
+            std::cout << "move: " << moves[bestMove].uci() << std::endl;
+#endif
+
+            // checkmate at lowest depth (given by iterative deepening)
+            if (iterBestEval == EVAL_MAX) {
+                break;
+            }
         }
     }
     catch (const Timer::OutOfTime &e)
@@ -110,7 +120,6 @@ int Search::alphaBeta(int counter, int depth, int alpha, int beta)
     // eval.evaluate(board.turn)
 
     // DFS backtrack search: play move, recurse, unplay move
-    int max = EVAL_MIN;
     for (auto &move : moves)
     {
         board.push(move); // play move
