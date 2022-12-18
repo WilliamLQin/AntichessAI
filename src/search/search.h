@@ -11,10 +11,10 @@ class Search
     chess::Board &board;
     Timer &timer;
     Evaluate eval;
-    int negamax(int counter, int depth);
+    int alphaBeta(int counter, int depth, int alpha, int beta);
 
 public:
-    explicit Search(chess::Board &b, Timer &t) : board(b), timer(t), eval(b) {};
+    explicit Search(chess::Board &b, Timer &t) : board(b), timer(t), eval(b){};
     chess::Move best_move();
 };
 
