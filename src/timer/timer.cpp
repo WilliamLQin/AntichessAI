@@ -7,7 +7,6 @@
 
 void Timer::startTurn() {
     startTime = std::chrono::steady_clock::now();
-    checkpointTime = startTime;
 }
 
 void Timer::endTurn() {
@@ -22,15 +21,14 @@ void Timer::endTurn() {
 #endif
 }
 
-bool Timer::checkpoint() {
+void Timer::checkOutOfTime() {
     std::chrono::steady_clock::time_point time = std::chrono::steady_clock::now();
     std::chrono::milliseconds diff =
             std::chrono::duration_cast<std::chrono::milliseconds>(time - startTime);
-    std::chrono::milliseconds checkpointDiff =
-            std::chrono::duration_cast<std::chrono::milliseconds>(time - checkpointTime);
-    checkpointTime = time;
 
-    return diff + checkpointDiff + LEEWAY_TIME < TIME_PER_TURN;
+    if (diff + LEEWAY_TIME > TIME_PER_TURN) {
+        throw OutOfTime();
+    }
 }
 
 double Timer::getUsedTime() {

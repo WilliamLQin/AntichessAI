@@ -22,48 +22,46 @@ chess::Move Search::best_move()
 
     // TODO: Move ordering
 
-    // ITERATIVE DEEPENING, keep increasing levels until timer.checkpoint() returns false
-    for (int level = 1;; level += 1)
-    {
-        // negamax search
-        int iterBestIndex = 0;
-        int iterBestEval = EVAL_MIN;
+    // wrap iterative deepening in try block as out of time will raise exception
+    try {
+        // ITERATIVE DEEPENING, keep increasing levels until timer.checkpoint() returns false
+        for (int level = 1;; level += 1) {
+            // negamax search
+            int iterBestIndex = 0;
+            int iterBestEval = EVAL_MIN;
 
-        // First ply - look through each move and find the one with the best score
-        for (int i = 0; i < moves.size(); i++)
-        {
-            board.push(moves[i]);
+            // First ply - look through each move and find the one with the best score
+            for (int i = 0; i < moves.size(); i++) {
+                board.push(moves[i]);
 #ifdef DEBUG
-            std::cout << std::endl << "Searching move " << moves[i].uci() << std::endl;
+                std::cout << std::endl << "Searching move " << moves[i].uci() << std::endl;
 #endif
-            // Do the rest of the search starting with this move
-            int val = -negamax(level - 1, 1);
+                // Do the rest of the search starting with this move
+                int val = -negamax(level - 1, 1);
 
-            if (val > iterBestEval)
-            {
-                iterBestEval = val;
-                iterBestIndex = i;
+                if (val > iterBestEval) {
+                    iterBestEval = val;
+                    iterBestIndex = i;
+                }
+                board.pop();
             }
-            board.pop();
 
-            // OUT OF TIME, return best move (not from this search iteration)
-            if (!timer.checkpoint()) {
-                return moves[bestMove];
-            }
+            // only update best move if entire level searched
+            bestMove = iterBestIndex;
         }
-
-        // only update best move if entire level searched
-        bestMove = iterBestIndex;
+    } catch (const Timer::OutOfTime& e) {
+        // do nothing, we simply want to break out
     }
 
-    // will never reach here
-    // return moves[bestMove];
+     return moves[bestMove];
 }
 
 // DFS negamax
 // with "full" search of forced moves (capture or check)
 int Search::negamax(int counter, int depth)
 {
+    timer.checkOutOfTime();
+
     // Search hard stop: forced move search depth exceeded or game over
     if (counter <= -10 || board.is_game_over(true)) {
         int value = eval.evaluate(board.turn);

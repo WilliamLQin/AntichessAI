@@ -6,6 +6,7 @@
 #define ANTICHESSAI_TIMER_H
 
 #include <chrono>
+#include <exception>
 
 class Timer {
     constexpr static std::chrono::milliseconds ALLOTTED_TIME = std::chrono::milliseconds(3*60*1000);
@@ -13,12 +14,13 @@ class Timer {
     constexpr static std::chrono::milliseconds TIME_PER_TURN = std::chrono::milliseconds (1000);
     std::chrono::milliseconds usedTime;
     std::chrono::steady_clock::time_point startTime;
-    std::chrono::steady_clock::time_point checkpointTime;
 public:
+    class OutOfTime : public std::exception {};
+
     explicit Timer() : usedTime(0) {};
     void startTurn();
     void endTurn();
-    bool checkpoint();
+    void checkOutOfTime();
     double getUsedTime();
 };
 
