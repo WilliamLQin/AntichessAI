@@ -257,10 +257,10 @@ int Evaluate::piece_positions(const bool &is_endgame) { // TODO: is_endgame
                         break;
                     case 6:
                         if (!is_endgame) {
-                            ret += piece_table_black_king_mid[square];
+                            ret -= piece_table_black_king_mid[square];
                         }
                         else {
-                            ret += piece_table_black_king_end[square];
+                            ret -= piece_table_black_king_end[square];
                         }
                         break;
                 }
