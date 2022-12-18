@@ -7,9 +7,7 @@ chess::Move Search::best_move()
     std::vector<chess::Move> moves;
 
     // negamax search
-    int moveIndex = 0;
-    int bestEval = EVAL_MIN;
-    int searchCounter = 2; // search 2 ply
+    int bestMove = 0;
 
     moves = board.generate_legal_captures();
     if (moves.empty())
@@ -17,24 +15,49 @@ chess::Move Search::best_move()
         moves = board.generate_legal_moves();
     }
 
-    // look through each move and find the one with the best score
-    for (int i = 0; i < moves.size(); i++)
-    {
-        board.push(moves[i]);
-#ifdef DEBUG
-        std::cout << std::endl << "Searching move " << moves[i].uci() << std::endl;
-#endif
-        int val = -negamax(searchCounter - 1, 1);
-
-        if (val > bestEval)
-        {
-            bestEval = val;
-            moveIndex = i;
-        }
-        board.pop();
+    // forced move
+    if (moves.size() == 1) {
+        return moves[0];
     }
 
-    return moves[moveIndex];
+    // TODO: Move ordering
+
+    // ITERATIVE DEEPENING, keep increasing levels until timer.checkpoint() returns false
+    for (int level = 1;; level += 1)
+    {
+        // negamax search
+        int iterBestIndex = 0;
+        int iterBestEval = EVAL_MIN;
+
+        // First ply - look through each move and find the one with the best score
+        for (int i = 0; i < moves.size(); i++)
+        {
+            board.push(moves[i]);
+#ifdef DEBUG
+            std::cout << std::endl << "Searching move " << moves[i].uci() << std::endl;
+#endif
+            // Do the rest of the search starting with this move
+            int val = -negamax(level - 1, 1);
+
+            if (val > iterBestEval)
+            {
+                iterBestEval = val;
+                iterBestIndex = i;
+            }
+            board.pop();
+
+            // OUT OF TIME, return best move (not from this search iteration)
+            if (!timer.checkpoint()) {
+                return moves[bestMove];
+            }
+        }
+
+        // only update best move if entire level searched
+        bestMove = iterBestIndex;
+    }
+
+    // will never reach here
+    // return moves[bestMove];
 }
 
 // DFS negamax

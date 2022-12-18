@@ -5,6 +5,7 @@
 #include "cpp-chess/chess.h"
 #include "search/search.h"
 #include "evaluate/evaluate.h"
+#include "timer/timer.h"
 
 void playerTurn(chess::Board& board) {
     std::string input;
@@ -55,8 +56,9 @@ void playerTurn(chess::Board& board) {
 void play_game(std::string cli_input) {
     chess::Board::captures_compulsory = true; // this doesn't actually do anything
     chess::Board board;
+    Timer timer;
 
-    Search search(board);
+    Search search(board, timer);
 
     std::string input;
 
@@ -89,16 +91,24 @@ void play_game(std::string cli_input) {
 
     while(!board.is_game_over(true)) {
         // AI MOVE
+        timer.startTurn();
+
         chess::Move ai_move = search.best_move();
         board.push(ai_move);
 
 #ifdef CLI_MODE
         std::cout << "Computer plays: " << std::flush;
 #endif
-        std::cout << std::string(ai_move) << std::endl;
+        std::cout << std::string(ai_move) << std::endl; // OUTPUT MOVE
+        timer.endTurn();
+        // END AI MOVE
+
 #ifdef CLI_MODE
         std::cout << std::endl << std::string(board) << std::endl << std::endl;
-        std::cout << std::fixed << std::setprecision(2) << "Evaluation: " << float(evaluator.evaluate(chess::WHITE)) / 100.0 << std::endl;
+        std::cout << std::fixed << std::setprecision(2)
+                    << "Evaluation: " << float(evaluator.evaluate(chess::WHITE)) / 100.0 << std::endl;
+        std::cout << std::fixed << std::setprecision(3)
+                    << "Elapsed time: " << timer.getUsedTime() << std::endl;
 #endif
 
         if (board.is_game_over(true)) {

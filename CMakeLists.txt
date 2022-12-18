@@ -7,10 +7,10 @@ project(AntichessAI)
 
 add_executable(${PROJECT_NAME} 
         src/main.cpp 
-        src/cpp-chess/chess.cpp 
-        src/search/search.cpp
-        src/evaluate/evaluate.cpp
-)
+        src/cpp-chess/chess.cpp src/cpp-chess/chess.h
+        src/search/search.cpp src/search/search.h
+        src/evaluate/evaluate.cpp src/evaluate/evaluate.h
+        src/timer/timer.cpp src/timer/timer.h)
 if(CLI_MODE)
     target_compile_definitions(${PROJECT_NAME} PRIVATE CLI_MODE)
 endif()
