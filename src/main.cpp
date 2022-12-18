@@ -6,8 +6,9 @@
 #include "search/search.h"
 #include "evaluate/evaluate.h"
 #include "timer/timer.h"
+#include "memoization/transposition_table.h"
 
-void playerTurn(chess::Board& board) {
+void playerTurn(chess::Board& board, TranspositionTable &tt_obj) {
     std::string input;
     std::vector<chess::Move> moves;
 
@@ -36,7 +37,7 @@ void playerTurn(chess::Board& board) {
 
             for (auto move : moves) {
                 if (move.uci() == playerMove.uci()) {
-                    board.push(playerMove);
+                    tt_obj.push(playerMove);
                     found = true;
                 }
             }
@@ -58,7 +59,8 @@ void play_game(std::string cli_input) {
     chess::Board board;
     Timer timer;
 
-    Search search(board, timer);
+    TranspositionTable tt_obj(board);
+    Search search(board, timer, tt_obj);
 
     std::string input;
 
@@ -86,15 +88,22 @@ void play_game(std::string cli_input) {
     
     // player makes a move first
     if (input == "black") {
-        playerTurn(board);
+        playerTurn(board, tt_obj);
     }
 
     while(!board.is_game_over(true)) {
+#ifdef CLI_MODE
+        std::cout << std::endl << std::string(board) << std::endl << std::endl;
+        std::cout << std::fixed << std::setprecision(2)
+                  << "Evaluation: " << float(evaluator.evaluate(chess::WHITE)) / 100.0 << std::endl;
+        system("read"); // MAC and LINUX ONLY
+#endif
+
         // AI MOVE
         timer.startTurn();
 
         chess::Move ai_move = search.best_move();
-        board.push(ai_move);
+        tt_obj.push(ai_move);
 
 #ifdef CLI_MODE
         std::cout << "Computer plays: " << std::flush;
@@ -116,7 +125,7 @@ void play_game(std::string cli_input) {
         }
 
         // PLAYER MOVE
-        playerTurn(board);
+        playerTurn(board, tt_obj);
     }
 
 #ifdef CLI_MODE

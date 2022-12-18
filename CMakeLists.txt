@@ -10,7 +10,8 @@ add_executable(${PROJECT_NAME}
         src/cpp-chess/chess.cpp src/cpp-chess/chess.h
         src/search/search.cpp src/search/search.h
         src/evaluate/evaluate.cpp src/evaluate/evaluate.h
-        src/timer/timer.cpp src/timer/timer.h)
+        src/timer/timer.cpp src/timer/timer.h
+        src/memoization/transposition_table.cpp src/memoization/transposition_table.h)
 if(CLI_MODE)
     target_compile_definitions(${PROJECT_NAME} PRIVATE CLI_MODE)
 endif()
