@@ -64,8 +64,10 @@ chess::Move Search::best_move()
             board.pop();
         }
     }
+#ifdef DEBUG
     std::cout << std::endl
               << std::string(board) << std::endl;
+#endif
     return moves[bestMove];
 }
 
