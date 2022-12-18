@@ -8,13 +8,14 @@
 // positive val is good for player in question
 // a1 is first array elem, flipped vertically from white's perspective
 
+
 int piece_table_white_pawn[64] = {
 0,  0,  0,  0,  0,  0,  0,  0, // a1, b1, ....
-5, 10, 10,-20,-20, 10, 10,  5, // a2, b2, ...
-5, -5,-10,  0,  0,-10, -5,  5,
-0,  0,  0, 20, 20,  0,  0,  0,
-5,  5, 10, 25, 25, 10,  5,  5,
-10, 10, 20, 30, 30, 20, 10, 10,
+5, 10, 20, 20, 20, 10, 10,  5, // a2, b2, ...
+10, 0, 0,  0,  0,  0,  0,  10,
+0,  0,  0,  0,  0,  0,  0,  0,
+10,  10, 10, 10, 10, 10,  10,  10,
+30, 30, 30, 30, 30, 30, 30, 30,
 50, 50, 50, 50, 50, 50, 50, 50,
 0,  0,  0,  0,  0,  0,  0,  0
 };
@@ -22,13 +23,14 @@ int piece_table_white_pawn[64] = {
 int piece_table_black_pawn[64] = {
 0,  0,  0,  0,  0,  0,  0,  0,
 50, 50, 50, 50, 50, 50, 50, 50,
-10, 10, 20, 30, 30, 20, 10, 10,
-5,  5, 10, 25, 25, 10,  5,  5,
-0,  0,  0, 20, 20,  0,  0,  0,
-5, -5,-10,  0,  0,-10, -5,  5,
-5, 10, 10,-20,-20, 10, 10,  5,
+30, 30, 30, 30, 30, 30, 30, 30,
+10,  10, 10, 10, 10, 10,  10,  10,
+0,  0,  0,  0,  0,  0,  0,  0,
+10, 0, 0,  0,  0,  0,  0,  10,
+5, 10, 20, 20, 20, 10, 10,  5,
 0,  0,  0,  0,  0,  0,  0,  0
 };
+
 
 int piece_table_white_knight[64] = {
 -50,-40,-30,-30,-30,-30,-40,-50,
@@ -54,11 +56,11 @@ int piece_table_black_knight[64] = {
 
 int piece_table_white_bishop[64] = {
 -20,-10,-10,-10,-10,-10,-10,-20,
--10,  5,  0,  0,  0,  0,  5,-10,
 -10, 10, 10, 10, 10, 10, 10,-10,
--10,  0, 10, 10, 10, 10,  0,-10,
--10,  5,  5, 10, 10,  5,  5,-10,
--10,  0,  5, 10, 10,  5,  0,-10,
+-10, 10,  0,  0,  0,  0, 10,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
 -10,  0,  0,  0,  0,  0,  0,-10,
 -20,-10,-10,-10,-10,-10,-10,-20,
 };
@@ -66,12 +68,12 @@ int piece_table_white_bishop[64] = {
 int piece_table_black_bishop[64] = {
 -20,-10,-10,-10,-10,-10,-10,-20,
 -10,  0,  0,  0,  0,  0,  0,-10,
--10,  0,  5, 10, 10,  5,  0,-10,
--10,  5,  5, 10, 10,  5,  5,-10,
--10,  0, 10, 10, 10, 10,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10, 10,  0,  0,  0,  0, 10,-10,
 -10, 10, 10, 10, 10, 10, 10,-10,
--10,  5,  0,  0,  0,  0,  5,-10,
--20,-10,-10,-10,-10,-10,-10,-20
+-20,-10,-10,-10,-10,-10,-10,-20,
 };
 
 int piece_table_white_rook[64] = {
@@ -96,31 +98,71 @@ int piece_table_black_rook[64] = {
  0,  0,  0,  5,  5,  0,  0,  0
 };
 
+int piece_table_white_queen[64] = {
+-20,-10,-10, -5, -5,-10,-10,-20,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-20,-10,-10, -5, -5,-10,-10,-20
+};
+
 int piece_table_black_queen[64] = {
 -20,-10,-10, -5, -5,-10,-10,-20,
 -10,  0,  0,  0,  0,  0,  0,-10,
--10,  0,  5,  5,  5,  5,  0,-10,
- -5,  0,  5,  5,  5,  5,  0, -5,
-  0,  0,  5,  5,  5,  5,  0, -5,
--10,  5,  5,  5,  5,  5,  0,-10, // not symmetric but board isn't either
--10,  0,  5,  0,  0,  0,  0,-10,
--20,-10,-10, -5, -5,-10,-10,-20
-};
-
-int piece_table_white_queen[64] = {
--20,-10,-10, -5, -5,-10,-10,-20,
--10,  0,  5,  0,  0,  0,  0,-10,
--10,  5,  5,  5,  5,  5,  0,-10,
-  0,  0,  5,  5,  5,  5,  0, -5,
- -5,  0,  5,  5,  5,  5,  0, -5,
--10,  0,  5,  5,  5,  5,  0,-10,
+-10,  0,  0,  0,  0,  0,  0,-10,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+-10,  0,  0,  0,  0,  0,  0,-10,
 -10,  0,  0,  0,  0,  0,  0,-10,
 -20,-10,-10, -5, -5,-10,-10,-20
 };
 
-// TODO: leaving this for now, midgame / endgame tables?
-//int piece_table_white_king[64] = [];
-//int piece_table_black_king[64] = [];
+int piece_table_white_king_mid[64] = {
+ 20, 30, 10,  0,  0, 10, 30, 20,
+ 20, 20,  0,  0,  0,  0, 20, 20,
+-10,-20,-20,-20,-20,-20,-20,-10,
+-20,-30,-30,-40,-40,-30,-30,-20,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30
+};
+
+int piece_table_black_king_mid[64] = {
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-20,-30,-30,-40,-40,-30,-30,-20,
+-10,-20,-20,-20,-20,-20,-20,-10,
+ 20, 20,  0,  0,  0,  0, 20, 20,
+ 20, 30, 10,  0,  0, 10, 30, 20
+};
+
+int piece_table_white_king_end[64] = {
+-50,-40,-30,-20,-20,-30,-40,-50,
+-30,-30,  0,  0,  0,  0,-30,-30,
+-30,-10, 20, 30, 30, 20,-10,-30,
+-30,-10, 30, 40, 40, 30,-10,-30,
+-30,-10, 30, 40, 40, 30,-10,-30,
+-30,-10, 20, 30, 30, 20,-10,-30,
+-30,-20,-10,  0,  0,-10,-20,-30,
+-50,-30,-30,-30,-30,-30,-30,-50
+};
+
+int piece_table_black_king_end[64] = {
+-50,-40,-30,-20,-20,-30,-40,-50,
+-30,-20,-10,  0,  0,-10,-20,-30,
+-30,-10, 20, 30, 30, 20,-10,-30,
+-30,-10, 30, 40, 40, 30,-10,-30,
+-30,-10, 30, 40, 40, 30,-10,-30,
+-30,-10, 20, 30, 30, 20,-10,-30,
+-30,-30,  0,  0,  0,  0,-30,-30,
+-50,-30,-30,-30,-30,-30,-30,-50
+};
 
 // convention: black evaluates to negative in sub-methods until return in final evaluate
 
@@ -162,7 +204,7 @@ int Evaluate::material(bool &is_endgame) {
     return ret;
 }
 
-int Evaluate::piece_positions() { // TODO: is_endgame
+int Evaluate::piece_positions(const bool &is_endgame) { // TODO: is_endgame
     int ret = 0;
     for (auto square: chess::SQUARES) {
         std::optional<chess::Piece> piece_at_square = board.piece_at(square);
@@ -171,32 +213,56 @@ int Evaluate::piece_positions() { // TODO: is_endgame
                 switch (piece_at_square->piece_type) {
                     case 1:
                         ret += piece_table_white_pawn[square];
+                        break;
                     case 2:
-                        ret += piece_table_white_knight[square];
+                        // TODO
+                        //ret += piece_table_white_knight[square];
+                        break;
                     case 3:
                         ret += piece_table_white_bishop[square];
+                        break;
                     case 4:
                         ret += piece_table_white_rook[square];
+                        break;
                     case 5:
                         ret += piece_table_white_queen[square];
+                        break;
                     case 6:
-                        ret += 0; // TODO: king
+                        if (!is_endgame) {
+                            ret += piece_table_white_king_mid[square];
+                        }
+                        else {
+                            ret += piece_table_white_king_end[square];
+                        }
+                        break;
                 }
             }
             else {
                 switch (piece_at_square->piece_type) {
                     case 1:
                         ret -= piece_table_black_pawn[square];
+                        break;
                     case 2:
-                        ret -= piece_table_black_knight[square];
+                        // TODO
+                        // ret -= piece_table_black_knight[square];
+                        break;
                     case 3:
                         ret -= piece_table_black_bishop[square];
+                        break;
                     case 4:
                         ret -= piece_table_black_rook[square];
+                        break;
                     case 5:
                         ret -= piece_table_black_queen[square];
+                        break;
                     case 6:
-                        ret -= 0; // TODO: king
+                        if (!is_endgame) {
+                            ret += piece_table_black_king_mid[square];
+                        }
+                        else {
+                            ret += piece_table_black_king_end[square];
+                        }
+                        break;
                 }
             }
         }
@@ -258,8 +324,8 @@ int Evaluate::evaluate(chess::Color color) {
     // rest of evaluate 
     bool is_endgame = false;
     int ret = material(is_endgame);
-    ret += mobility(is_endgame);
-    ret += piece_positions();
+    //ret += mobility(is_endgame);
+    ret += piece_positions(is_endgame);
     
     return ret * (color == chess::WHITE ? 1 : -1);
 }
