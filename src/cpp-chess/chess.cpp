@@ -1927,6 +1927,7 @@ namespace chess
     std::vector<Move> Board::generate_pseudo_legal_moves(Bitboard from_mask, Bitboard to_mask) const
     {
         std::vector<Move> iter;
+        iter.reserve(130);
         Bitboard our_pieces = this->occupied_co[this->turn];
 
         // Generate piece moves.
@@ -4134,6 +4135,7 @@ namespace chess
     std::vector<Move> Board::generate_legal_moves(Bitboard from_mask, Bitboard to_mask) const
     {
         std::vector<Move> iter;
+        iter.reserve(130);
         if (this->is_variant_end())
         {
             return iter;
@@ -4197,6 +4199,7 @@ namespace chess
     std::vector<Move> Board::generate_legal_captures(Bitboard from_mask, Bitboard to_mask) const
     {
         std::vector<Move> iter;
+        iter.reserve(130);
         for (const Move &move : this->generate_legal_moves(from_mask, to_mask & this->occupied_co[!this->turn]))
         {
             iter.push_back(move);
