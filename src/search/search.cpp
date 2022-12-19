@@ -2,6 +2,10 @@
 #include <iostream>
 #include <vector>
 
+#ifdef DEBUG
+long long int numSearched = 0;
+#endif
+
 chess::Move Search::best_move()
 {
     std::vector<chess::Move> moves;
@@ -23,6 +27,9 @@ chess::Move Search::best_move()
 
     // TODO: Move ordering
 
+#ifdef DEBUG
+    numSearched = 0;
+#endif
     // wrap iterative deepening in try block as out of time will raise exception
     try
     {
@@ -37,10 +44,9 @@ chess::Move Search::best_move()
             for (int i = 0; i < moves.size(); i++)
             {
                 board.push(moves[i]);
-#ifdef DEBUG
-                std::cout << std::endl
-                          << "Searching move " << moves[i].uci() << std::endl;
-#endif
+//#ifdef DEBUG
+//                std::cout << std::endl << "Searching move " << moves[i].uci() << std::endl;
+//#endif
                 // Do the rest of the search starting with this move
                 int val = -alphaBeta(level - 1, 1, EVAL_MIN, EVAL_MAX);
 
@@ -56,8 +62,9 @@ chess::Move Search::best_move()
             bestMove = iterBestIndex;
 
 #ifdef DEBUG
-            std::cout << "best eval for level " << level << ": " << iterBestEval << std::endl;
-            std::cout << "move: " << moves[bestMove].uci() << std::endl;
+            std::cout << "best move for level " << level << ": " << moves[bestMove].uci()
+                << " " << iterBestEval << std::endl;
+            std::cout << "num positions searched: " << numSearched << std::endl;
 #endif
 
             // checkmate at lowest depth (given by iterative deepening)
@@ -75,8 +82,7 @@ chess::Move Search::best_move()
         }
     }
 #ifdef DEBUG
-    std::cout << std::endl
-              << std::string(board) << std::endl;
+    std::cout << "Number of positions searched: " << numSearched << std::endl;
 #endif
     return moves[bestMove];
 }
@@ -86,15 +92,29 @@ chess::Move Search::best_move()
 int Search::alphaBeta(int counter, int depth, int alpha, int beta)
 {
     timer.checkOutOfTime(depth);
-
-    // Search hard stop: forced move search depth exceeded or game over
-    if (counter <= -10 || board.is_game_over(true))
-    {
-        int value = eval.evaluate(board.turn);
 #ifdef DEBUG
-        std::cout << value << std::endl;
+    numSearched += 1;
 #endif
-        return value;
+
+    // Search stop: game over
+    if (board.is_game_over(true))
+    {
+        return eval.evaluate(board.turn);
+    }
+
+    // currently performing QUIESCENCE SEARCH (i.e. searching down forced moves after a capture)
+    if (counter < 0) {
+        // For quiescence search, we want to calculate static evaluation at every node
+        // to do some alpha beta pruning
+        int value = eval.evaluate(board.turn);
+        if (value >= beta)
+        {
+            return beta;
+        }
+        if (value > alpha)
+        {
+            alpha = value;
+        }
     }
 
     // check if there are any forced captures
@@ -105,47 +125,38 @@ int Search::alphaBeta(int counter, int depth, int alpha, int beta)
         // counter <= 0 so search depth reached, stop
         if (!board.is_check() && counter <= 0)
         {
-            int value = eval.evaluate(board.turn);
-#ifdef DEBUG
-            std::cout << value << std::endl;
-#endif
-            return value;
+            return eval.evaluate(board.turn);
         }
 
         // if didn't stop, move set is all legal moves
         moves = board.generate_legal_moves();
     }
 
-    // To get evaluation at current node, run this line of code outside play/unplay move
-    // eval.evaluate(board.turn)
+    // TODO: move ordering
 
     // DFS backtrack search: play move, recurse, unplay move
     for (auto &move : moves)
     {
         board.push(move); // play move
 
-        // To get evaluation at a child node, run this line of code between play/unplay move:
-        // eval.evaluate(board.turn)
-
-#ifdef DEBUG
-        std::cout << move.uci() << " " << counter << " ";
-#endif
+//#ifdef DEBUG
+//        std::cout << move.uci() << " " << counter << " ";
+//#endif
         // recurse
         int childScore = -alphaBeta(counter - 1, depth + 1, -beta, -alpha);
-        // reevaluate variables
+
+        board.pop(); // un play move
+
+        // alpha-beta pruning
         if (childScore >= beta)
         {
-            board.pop();
             return beta;
         }
+
         if (childScore > alpha)
         {
             alpha = childScore;
         }
-
-        board.pop(); // un play move
     }
     return alpha;
 }
-
-// std::cout << std::endl << std::string(board) << std::endl;
