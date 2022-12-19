@@ -302,20 +302,20 @@ int Evaluate::evaluate(chess::Color color) {
         if (board.is_checkmate()) {
             if (board.turn == chess::WHITE) {
                 if (color == chess::WHITE) {
-                    return EVAL_MIN;
+                    return EVAL_MIN; // white lost, we are white
                 } else {
-                    return EVAL_MAX;
+                    return EVAL_MAX; // white lost, we are black
                 }
             } else {
                 if (color == chess::WHITE) {
-                    return EVAL_MAX;
+                    return EVAL_MAX; // black lost, we are white
                 } else {
-                    return EVAL_MIN;
+                    return EVAL_MIN; // black lost, we are black
                 }
             }
         }
         // draw
-        return 0;
+        return -80; // we want to avoid draw
     }
 
     // rest of evaluate 
