@@ -55,9 +55,7 @@ void playerTurn(chess::Board& board) {
 
 void play_game(std::string cli_input) {
     chess::Board::captures_compulsory = true; // this doesn't actually do anything
-    //chess::Board board;
-    chess::Board board("r3k2r/ppp2ppp/3p4/n7/4P3/2NP4/PPP2PPP/R3K2R w KQkq - 3 16");
-    //board.has_castled[1] = 1;
+    chess::Board board;
     Timer timer;
 
     Search search(board, timer);

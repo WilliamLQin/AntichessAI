@@ -425,27 +425,17 @@ int Evaluate::pawn_shield() {
                     // check closest pawn in left file from king
                     pawn_starting_square = white_king_square + 7; // square immediately forward to the left
                     ret += check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE);
-                    // TODO: remove
-                    std::cout << "WHITE KING SAFETY LEFT: " << check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE) << std::endl;
                 }
                 // check closest pawn in center file where king is
                 pawn_starting_square = white_king_square + 8; // square immediately forward
                 ret += check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE);
-                // TODO: remove
-                std::cout << "WHITE KING SAFETY CENTRE: " << check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE) << std::endl;
                 if (white_king_square % 8 != 7) {
                     // check closest pawn in right file from king
                     pawn_starting_square = white_king_square + 9; // square immediately forward to the right
                     ret += check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE);
-                    // TODO: remove
-                    std::cout << "WHITE KING SAFETY RIGHT: " << check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE) << std::endl;
                 }
             }
-            // TODO: remove
-            std::cout << "WHITE KING SAFETY: " << ret << std::endl;
         }
-        // TODO: remove
-        std::cout << board.has_castled[0] << board.has_castled[1] << std::endl;
         if (board.has_castled[chess::BLACK]) {
             // check pawn structure as far as king on 3rd last rank
             if (black_king_square >= 16) {
@@ -454,25 +444,17 @@ int Evaluate::pawn_shield() {
                     // check closest pawn in left file from king
                     pawn_starting_square = black_king_square - 7; // square immediately forward to the left
                     ret -= check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK);
-                    // TODO: remove
-                    std::cout << "BLACK KING SAFETY LEFT: " << check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK) << std::endl;
                 }
                 // check closest pawn in center file where king is
                 pawn_starting_square = black_king_square - 8; // square immediately forward
                 ret -= check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK);
-                // TODO: remove
-                std::cout << "BLACK KING SAFETY CENTRE: " << check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK) << std::endl;
                 if (black_king_square % 8 != 0) {
                     // check closest pawn in right file from king
                     pawn_starting_square = black_king_square - 9; // square immediately forward to the right
                     ret -= check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK);
-                    // TODO: remove
-                    std::cout << "BLACK KING SAFETY RIGHT: " << check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK) << std::endl;
                 }
             }
         }
-        // TODO: remove
-        std::cout << "TOTAL KING SAFETY: " << ret << std::endl;
     }
     return ret;
 }
