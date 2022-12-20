@@ -298,8 +298,10 @@ int Evaluate::mobility(const bool &is_endgame) {
 
 int Evaluate::check_file_for_pawns(chess::Square pawn_starting_square, chess::Square king_square, chess::Color color) {
     // positive points here = good, regardless of player
-    // +100 for each pawn at most 2 squares forward from the king 
-    // -50 for each pawn more than 2 squares foward from the king
+    // +300 for each pawn 1-2 squares forward from the king 
+    // -100 for each pawn more than 2 squares foward from the king
+    // +50 for each pawn beside or 1 step behind the king
+    // +0 for each pawn more than 1 step behind the king
     // -200 for any missing pawn that doesn't open file where king is
     // -300 for any missing pawn that creates open file where king is
 
@@ -307,15 +309,16 @@ int Evaluate::check_file_for_pawns(chess::Square pawn_starting_square, chess::Sq
     int squares_forward_from_king = 1;
     bool pawn_found = 0;
     chess::Square pawn_square = pawn_starting_square;
+    std::optional<chess::Piece> piece_at_square;
     if (color == chess::WHITE) {
-        while (pawn_square < 56) { // before last rank
-            std::optional<chess::Piece> piece_at_square = board.piece_at(pawn_square);
+        while (pawn_square < 56) { // check forwards, before last rank
+            piece_at_square = board.piece_at(pawn_square);
             if (piece_at_square != std::nullopt && piece_at_square->piece_type == 1 && piece_at_square->color == chess::WHITE) {
                 if (squares_forward_from_king <= 2) {
-                    ret += 100;
+                    ret += 300;
                 }
                 else {
-                    ret -= 50;
+                    ret -= 100;
                 }
                 pawn_found = 1;
                 break;
@@ -323,7 +326,26 @@ int Evaluate::check_file_for_pawns(chess::Square pawn_starting_square, chess::Sq
             squares_forward_from_king++;
             pawn_square += 8; // next square forward
         }
-        if (!pawn_found) {
+        if (!pawn_found) { // check backwards until 2nd rank
+            pawn_square = pawn_starting_square - 8;
+            squares_forward_from_king = 0;
+            while (pawn_square >= 8) {
+                piece_at_square = board.piece_at(pawn_square);
+                if (piece_at_square != std::nullopt && piece_at_square->piece_type == 1 && piece_at_square->color == chess::WHITE) {
+                    if (squares_forward_from_king >= -1) {
+                        ret += 50;
+                    }
+                    else {
+                        ret += 0;
+                    }
+                    pawn_found = 1;
+                    break;
+                }
+                squares_forward_from_king--;
+                pawn_square -= 8; // next square backward
+            }
+        }
+        if (!pawn_found) { // missing pawn 
             if (pawn_starting_square % 8 != king_square % 8) {  // doesn't create open file where king is
                 ret -= 200;
             }
@@ -334,13 +356,13 @@ int Evaluate::check_file_for_pawns(chess::Square pawn_starting_square, chess::Sq
     }
     else { // black
         while (pawn_square >= 8) { // before last rank
-            std::optional<chess::Piece> piece_at_square = board.piece_at(pawn_square);
+            piece_at_square = board.piece_at(pawn_square);
             if (piece_at_square != std::nullopt && piece_at_square->piece_type == 1 && piece_at_square->color == chess::BLACK) {
                 if (squares_forward_from_king <= 2) {
-                    ret += 100;
+                    ret += 300;
                 }
                 else {
-                    ret -= 50;
+                    ret -= 100;
                 }
                 pawn_found = 1;
                 break;
@@ -348,7 +370,26 @@ int Evaluate::check_file_for_pawns(chess::Square pawn_starting_square, chess::Sq
             squares_forward_from_king++;
             pawn_square -= 8; // next square forward
         }
-        if (!pawn_found) {
+        if (!pawn_found) { // check backwards until 2nd rank
+            pawn_square = pawn_starting_square + 8;
+            squares_forward_from_king = 0;
+            while (pawn_square < 56) {
+                piece_at_square = board.piece_at(pawn_square);
+                if (piece_at_square != std::nullopt && piece_at_square->piece_type == 1 && piece_at_square->color == chess::BLACK) {
+                    if (squares_forward_from_king >= -1) {
+                        ret += 50;
+                    }
+                    else {
+                        ret += 0;
+                    }
+                    pawn_found = 1;
+                    break;
+                }
+                squares_forward_from_king--;
+                pawn_square += 8; // next square backward
+            }
+        }
+        if (!pawn_found) { // missing pawn
             if (pawn_starting_square % 8 != king_square % 8) {  // doesn't create open file where king is
                 ret -= 200;
             }
@@ -385,19 +426,19 @@ int Evaluate::pawn_shield() {
                     pawn_starting_square = white_king_square + 7; // square immediately forward to the left
                     ret += check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE);
                     // TODO: remove
-                    std::cout << "WHITE KING SAFETY LEFT: " << ret << std::endl;
+                    std::cout << "WHITE KING SAFETY LEFT: " << check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE) << std::endl;
                 }
                 // check closest pawn in center file where king is
                 pawn_starting_square = white_king_square + 8; // square immediately forward
                 ret += check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE);
                 // TODO: remove
-                std::cout << "WHITE KING SAFETY CENTRE: " << ret << std::endl;
+                std::cout << "WHITE KING SAFETY CENTRE: " << check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE) << std::endl;
                 if (white_king_square % 8 != 7) {
                     // check closest pawn in right file from king
                     pawn_starting_square = white_king_square + 9; // square immediately forward to the right
                     ret += check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE);
                     // TODO: remove
-                    std::cout << "WHITE KING SAFETY RIGHT: " << ret << std::endl;
+                    std::cout << "WHITE KING SAFETY RIGHT: " << check_file_for_pawns(pawn_starting_square, white_king_square, chess::WHITE) << std::endl;
                 }
             }
             // TODO: remove
@@ -413,17 +454,25 @@ int Evaluate::pawn_shield() {
                     // check closest pawn in left file from king
                     pawn_starting_square = black_king_square - 7; // square immediately forward to the left
                     ret -= check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK);
+                    // TODO: remove
+                    std::cout << "BLACK KING SAFETY LEFT: " << check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK) << std::endl;
                 }
                 // check closest pawn in center file where king is
                 pawn_starting_square = black_king_square - 8; // square immediately forward
                 ret -= check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK);
+                // TODO: remove
+                std::cout << "BLACK KING SAFETY CENTRE: " << check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK) << std::endl;
                 if (black_king_square % 8 != 0) {
                     // check closest pawn in right file from king
                     pawn_starting_square = black_king_square - 9; // square immediately forward to the right
                     ret -= check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK);
+                    // TODO: remove
+                    std::cout << "BLACK KING SAFETY RIGHT: " << check_file_for_pawns(pawn_starting_square, black_king_square, chess::BLACK) << std::endl;
                 }
             }
         }
+        // TODO: remove
+        std::cout << "TOTAL KING SAFETY: " << ret << std::endl;
     }
     return ret;
 }
