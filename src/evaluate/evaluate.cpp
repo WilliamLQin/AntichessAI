@@ -164,6 +164,57 @@ int piece_table_black_king_end[64] = {
 -50,-30,-30,-30,-30,-30,-30,-50
 };
 
+int* piece_table_white_mid[6] = {
+        piece_table_white_pawn,
+        piece_table_white_knight,
+        piece_table_white_bishop,
+        piece_table_white_rook,
+        piece_table_white_queen,
+        piece_table_white_king_mid,
+};
+
+int* piece_table_black_mid[6] = {
+        piece_table_black_pawn,
+        piece_table_black_knight,
+        piece_table_black_bishop,
+        piece_table_black_rook,
+        piece_table_black_queen,
+        piece_table_black_king_mid,
+};
+
+int* piece_table_white_end[6] = {
+        piece_table_white_pawn,
+        piece_table_white_knight,
+        piece_table_white_bishop,
+        piece_table_white_rook,
+        piece_table_white_queen,
+        piece_table_white_king_end,
+};
+
+int* piece_table_black_end[6] = {
+        piece_table_black_pawn,
+        piece_table_black_knight,
+        piece_table_black_bishop,
+        piece_table_black_rook,
+        piece_table_black_queen,
+        piece_table_black_king_end,
+};
+
+int** piece_table_mid[2] = {
+        piece_table_black_mid,
+        piece_table_white_mid,
+};
+
+int** piece_table_end[2] = {
+        piece_table_black_end,
+        piece_table_white_end,
+};
+
+int*** piece_table[2] = {
+        piece_table_mid,
+        piece_table_end,
+};
+
 // convention: black evaluates to negative in sub-methods until return in final evaluate
 
 int Evaluate::material(bool &is_endgame) {
@@ -186,7 +237,7 @@ int Evaluate::material(bool &is_endgame) {
 
     white_material += wp.size() * 100;
     white_material += wb.size() * 300;
-    white_material += wn.size() * 310;
+    white_material += wn.size() * 300;
     white_material += wr.size() * 500;
     white_material += wq.size() * 900;
 
@@ -194,7 +245,7 @@ int Evaluate::material(bool &is_endgame) {
     
     black_material += bp.size() * 100;
     black_material += bb.size() * 300;
-    black_material += bn.size() * 310;
+    black_material += bn.size() * 300;
     black_material += br.size() * 500;
     black_material += bq.size() * 900;
 
@@ -209,62 +260,8 @@ int Evaluate::piece_positions(const bool &is_endgame) { // TODO: is_endgame
     for (auto square: chess::SQUARES) {
         std::optional<chess::Piece> piece_at_square = board.piece_at(square);
         if (piece_at_square != std::nullopt) {
-            if (piece_at_square->color == chess::WHITE) {
-                switch (piece_at_square->piece_type) {
-                    case 1:
-                        ret += piece_table_white_pawn[square];
-                        break;
-                    case 2:
-                        // TODO
-                        //ret += piece_table_white_knight[square];
-                        break;
-                    case 3:
-                        ret += piece_table_white_bishop[square];
-                        break;
-                    case 4:
-                        ret += piece_table_white_rook[square];
-                        break;
-                    case 5:
-                        ret += piece_table_white_queen[square];
-                        break;
-                    case 6:
-                        if (!is_endgame) {
-                            ret += piece_table_white_king_mid[square];
-                        }
-                        else {
-                            ret += piece_table_white_king_end[square];
-                        }
-                        break;
-                }
-            }
-            else {
-                switch (piece_at_square->piece_type) {
-                    case 1:
-                        ret -= piece_table_black_pawn[square];
-                        break;
-                    case 2:
-                        // TODO
-                        // ret -= piece_table_black_knight[square];
-                        break;
-                    case 3:
-                        ret -= piece_table_black_bishop[square];
-                        break;
-                    case 4:
-                        ret -= piece_table_black_rook[square];
-                        break;
-                    case 5:
-                        ret -= piece_table_black_queen[square];
-                        break;
-                    case 6:
-                        if (!is_endgame) {
-                            ret -= piece_table_black_king_mid[square];
-                        }
-                        else {
-                            ret -= piece_table_black_king_end[square];
-                        }
-                        break;
-                }
-            }
+            ret += (piece_at_square->color == chess::WHITE ? 1 : -1)
+                    * piece_table[is_endgame][piece_at_square->color][piece_at_square->piece_type - 1][square];
         }
     }
 
