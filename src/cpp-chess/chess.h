@@ -541,6 +541,7 @@ namespace chess
         Bitboard pawns, knights, bishops, rooks, queens, kings, occupied_w, occupied_b, occupied, promoted;
         Color turn;
         Bitboard castling_rights;
+        bool has_castled[2];
         std::optional<Square> ep_square;
         int halfmove_clock, fullmove_number;
         _BoardState(const Board &);
@@ -605,6 +606,7 @@ namespace chess
         /* The side to move (``chess::WHITE`` or ``chess::BLACK``). */
 
         Bitboard castling_rights;
+        bool has_castled[2] = {0, 0}; // whether black, white have castled
         /*
         Bitmask of the rooks with castling rights.
 
