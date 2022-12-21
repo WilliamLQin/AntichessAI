@@ -77,6 +77,15 @@ void TranspositionTable::pop()
 // cache an evaluation
 void TranspositionTable::storeEval(int eval, int depth, char nodeType, const char* bestResponse)
 {
+    // don't store checkmate scores in transposition table
+    if (eval == EVAL_MAX)
+    {
+        eval = EVAL_MAX - 1;
+    }
+    else if (eval == EVAL_MIN)
+    {
+        eval = EVAL_MIN + 1;
+    }
     // Always replace policy
     tt[currentHash % TT_SIZE].key = currentHash;
     tt[currentHash % TT_SIZE].eval = eval;

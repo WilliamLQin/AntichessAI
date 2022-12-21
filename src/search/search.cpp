@@ -10,7 +10,7 @@ long long int ttHits = 0;
 void Search::walkLine()
 {
     std::optional<TranspositionTable::TTEntry> ttEntry = tt_obj.loadEval();
-    if (ttEntry != std::nullopt && strcmp(ttEntry->move_uci, "000000") != 0)
+    if (ttEntry != std::nullopt && strcmp(ttEntry->move_uci, "000000") != 0 && !board.is_game_over(true))
     {
         chess::Move nextMove = chess::Move::from_uci(ttEntry->move_uci);
         std::cout << "(" << ttEntry->eval << ", " << ttEntry->depth << ", " << ttEntry->nodeType << ")" << "->" << ttEntry->move_uci << " ";
