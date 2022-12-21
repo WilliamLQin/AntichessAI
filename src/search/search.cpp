@@ -218,7 +218,56 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
         moves = board.generate_legal_moves();
     }
 
-    // TODO: move ordering
+    // MOVE ORDERING - sort the moves by transposition table entry hits
+    std::sort(moves.begin(), moves.end(),
+        [this](const chess::Move &a, const chess::Move &b) {
+            int aEval = 1000;
+            tt_obj.push(a);
+            std::optional<TranspositionTable::TTEntry> ttEntry = tt_obj.loadEval();
+            if (ttEntry != std::nullopt)
+            {
+              aEval = ttEntry->eval;
+            }
+            tt_obj.pop();
+
+            int bEval = 1000;
+            tt_obj.push(b);
+            ttEntry = tt_obj.loadEval();
+            if (ttEntry != std::nullopt)
+            {
+              bEval = ttEntry->eval;
+            }
+            tt_obj.pop();
+
+            return aEval < bEval; // want WORST result for the other player first => BEST move for us
+        }
+    );
+
+#ifdef DEBUG2
+    for (int i = 0; i < ((int)moves.size()); i++)
+    {
+        tt_obj.push(moves[i]);
+        std::optional<TranspositionTable::TTEntry> ttEntry = tt_obj.loadEval();
+        if (ttEntry != std::nullopt)
+        {
+            std::cout << ttEntry->eval << " ";
+        }
+        else
+        {
+            std::cout << "n/a ";
+        }
+        tt_obj.pop();
+    }
+
+    if (bestResponse != std::nullopt)
+    {
+        std::cout << bestResponse.value() << " " << moves[0] << " " << moves.back() << std::endl;
+    }
+    else
+    {
+        std::cout << "No best response" << std::endl;
+    }
+#endif
 
     int bestEval = EVAL_MIN;
     int bestMoveIndex = 0;
@@ -241,9 +290,6 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
             tt_obj.push(moves[i]); // play move
         }
 
-//#ifdef DEBUG
-//        std::cout << move.uci() << " " << counter << " ";
-//#endif
         int childScore = -alphaBeta(counter - 1, moves_pushed + 1, -beta, -alpha);
 
         tt_obj.pop(); // un play move
