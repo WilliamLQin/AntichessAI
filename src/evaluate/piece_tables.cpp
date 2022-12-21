@@ -212,8 +212,8 @@ int* piece_table_black_mid[6] = {
 };
 
 int* piece_table_white_end[6] = {
-        piece_table_white_pawn_mid, // MID being used here
-        piece_table_blank,
+        piece_table_white_pawn_end,
+        piece_table_white_knight_end,
         piece_table_white_bishop,
         piece_table_white_rook,
         piece_table_white_queen,
@@ -221,8 +221,8 @@ int* piece_table_white_end[6] = {
 };
 
 int* piece_table_black_end[6] = {
-        piece_table_black_pawn_mid, // MID being used here
-        piece_table_blank,
+        piece_table_black_pawn_end,
+        piece_table_black_knight_end,
         piece_table_black_bishop,
         piece_table_black_rook,
         piece_table_black_queen,
