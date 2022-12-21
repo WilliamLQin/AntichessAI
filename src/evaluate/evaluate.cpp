@@ -6,6 +6,24 @@
 
 #include "piece_tables.cpp"
 
+int bit_table[256] = {
+    0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8
+};
+
+int countSetBits(unsigned long long int n)
+{
+    return (bit_table[n & 0xff] +
+            bit_table[(n >> 8) & 0xff] +
+            bit_table[(n >> 16) & 0xff] +
+            bit_table[(n >> 24) & 0xff] +
+            bit_table[(n >> 32) & 0xff] +
+            bit_table[(n >> 40) & 0xff] +
+            bit_table[(n >> 48) & 0xff] +
+            bit_table[(n >> 56) & 0xff]);
+}
+
+#include <iostream>
+
 // convention: black evaluates to negative in sub-methods until return in final evaluate
 
 int Evaluate::material(bool &is_endgame) {
@@ -44,6 +62,36 @@ int Evaluate::material(bool &is_endgame) {
     is_endgame = (white_material - ((int)wp.size()) * 100) <= 1300 && (black_material - ((int)bp.size()) * 100) <= 1300;
 
     ret = white_material - black_material;
+
+    white_material = 0;
+
+    white_material += (countSetBits(board.bishops & board.occupied_co[chess::WHITE])) * 300;
+    white_material += (countSetBits(board.knights & board.occupied_co[chess::WHITE])) * 300;
+    white_material += (countSetBits(board.rooks & board.occupied_co[chess::WHITE])) * 500;
+    white_material += (countSetBits(board.queens & board.occupied_co[chess::WHITE])) * 900;
+
+    black_material = 0;
+
+    black_material += (countSetBits(board.bishops & board.occupied_co[chess::BLACK])) * 300;
+    black_material += (countSetBits(board.knights & board.occupied_co[chess::BLACK])) * 300;
+    black_material += (countSetBits(board.rooks & board.occupied_co[chess::BLACK])) * 500;
+    black_material += (countSetBits(board.queens & board.occupied_co[chess::BLACK])) * 900;
+
+    bool new_is_endgame = white_material <= 1300 && black_material <= 1300;
+
+    white_material += (countSetBits(board.pawns & board.occupied_co[chess::WHITE])) * 100;
+    black_material += (countSetBits(board.pawns & board.occupied_co[chess::BLACK])) * 100;
+
+    int new_eval = white_material - black_material;
+
+    std::cout << "old eval: " << ret << " endgame? " << is_endgame
+        << " new eval: " << new_eval << " endgame? " << new_is_endgame << std::endl;
+
+    if (ret != new_eval || is_endgame != new_is_endgame)
+    {
+        exit(1);
+    }
+
     return ret;
 }
 
