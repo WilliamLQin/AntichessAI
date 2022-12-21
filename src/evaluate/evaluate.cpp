@@ -40,7 +40,8 @@ int Evaluate::material(bool &is_endgame) {
     black_material += br.size() * 500;
     black_material += bq.size() * 900;
 
-    is_endgame = white_material <= 1300 && black_material <= 1300;
+    // 13 points of material or less (not including pawns)
+    is_endgame = (white_material - wp.size() * 100) <= 1300 && (black_material - bp.size() * 100) <= 1300;
 
     ret = white_material - black_material;
     return ret;
