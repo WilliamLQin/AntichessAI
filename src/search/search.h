@@ -13,7 +13,10 @@ class Search
     Timer &timer;
     TranspositionTable &tt_obj;
     Evaluate eval;
-    int alphaBeta(int counter, int depth, int alpha, int beta);
+    int quiesce(int counter, int moves_pushed, int alpha, int beta);
+    int alphaBeta(int counter, int moves_pushed, int alpha, int beta);
+    void orderMovesByTT(std::vector<chess::Move> &moves);
+    void orderMovesByMVVLVA(std::vector<chess::Move> &moves);
     void walkLine();
 
 public:
