@@ -114,6 +114,121 @@ chess::Move Search::best_move()
     return moves[bestMove];
 }
 
+void Search::orderMovesByTT(std::vector<chess::Move> &moves)
+{
+    std::sort(moves.begin(), moves.end(),
+        [this](const chess::Move &a, const chess::Move &b) {
+            int aEval = 1000;
+            tt_obj.push(a);
+            std::optional<TranspositionTable::TTEntry> ttEntry = tt_obj.loadEval();
+            if (ttEntry != std::nullopt)
+            {
+                aEval = ttEntry->eval;
+            }
+            tt_obj.pop();
+
+            int bEval = 1000;
+            tt_obj.push(b);
+            ttEntry = tt_obj.loadEval();
+            if (ttEntry != std::nullopt)
+            {
+                bEval = ttEntry->eval;
+            }
+            tt_obj.pop();
+
+            return aEval < bEval; // want WORST result for the other player first => BEST move for us
+        }
+    );
+}
+
+// 6 piece types
+// PAWN = 1, KNIGHT = 2, BISHOP = 3, ROOK = 4, QUEEN = 5, KING = 6;
+// Victim first, then attacker
+int mvv_lva_table[6][6] = {
+        15, 14, 13, 12, 11, 10, // victim P, attacker P, N, B, R, Q, K
+        25, 24, 23, 22, 21, 20, // victim N, attacker P, N, B, R, Q, K
+        35, 34, 33, 32, 31, 30, // victim B, attacker P, N, B, R, Q, K
+        45, 44, 43, 42, 41, 40, // victim R, attacker P, N, B, R, Q, K
+        55, 54, 53, 52, 51, 50, // victim Q, attacker P, N, B, R, Q, K
+        0, 0, 0, 0, 0, 0, // victim K, attacker P, N, B, R, Q, K
+};
+
+void Search::orderMovesByMVVLVA(std::vector<chess::Move> &moves)
+{
+    std::sort(moves.begin(), moves.end(),
+        [this](const chess::Move &a, const chess::Move &b) {
+            int aVal = 0;
+            std::optional<chess::Piece> aVictim = board.piece_at(a.to_square);
+            std::optional<chess::Piece> aAttacker = board.piece_at(a.from_square);
+            if (aVictim != std::nullopt && aAttacker != std::nullopt)
+            {
+                aVal = mvv_lva_table[aVictim->piece_type - 1][aAttacker->piece_type - 1];
+            }
+
+            int bVal = 0;
+            std::optional<chess::Piece> bVictim = board.piece_at(a.to_square);
+            std::optional<chess::Piece> bAttacker = board.piece_at(a.from_square);
+            if (bVictim != std::nullopt && bAttacker != std::nullopt)
+            {
+                bVal = mvv_lva_table[bVictim->piece_type - 1][bAttacker->piece_type - 1];
+            }
+
+            return aVal > bVal; // higher priority goes FIRST
+        }
+    );
+}
+
+// QUIESCENCE SEARCH - search captures only with alpha beta and eager evaluation
+int Search::quiesce(int counter, int moves_pushed, int alpha, int beta)
+{
+    int val = eval.evaluate(board.turn);
+
+    // hard stop
+    if (counter < -8 && moves_pushed % 2 == 0)
+    {
+        return val;
+    }
+
+    if (val >= beta)
+    {
+        return val;
+    }
+    if (val > alpha)
+    {
+        alpha = val;
+    }
+
+    std::vector<chess::Move> moves = board.generate_legal_captures();
+    if (moves.empty())
+    {
+        return val;
+    }
+    orderMovesByMVVLVA(moves);
+
+    // DFS backtrack search: play move, recurse, unplay move
+    for (int i = 0; i < ((int)moves.size()); i++)
+    {
+        tt_obj.push(moves[i]); // play move
+
+        int childScore = -quiesce(counter - 1, moves_pushed + 1, -beta, -alpha);
+
+        tt_obj.pop(); // un play move
+
+        if (childScore > alpha)
+        {
+            alpha = childScore;
+        }
+
+        // alpha-beta pruning
+        if (alpha >= beta)
+        {
+            break;
+        }
+    }
+
+    return alpha;
+}
+
 // DFS negamax
 // with "full" search of forced moves (capture or check)
 int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
@@ -178,7 +293,7 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     // Search stop: end of search
     if (counter <= 0)
     {
-        int val = eval.evaluate(board.turn);
+        int val = quiesce(counter, moves_pushed, alpha, beta);
         tt_obj.storeEval(val, counter, TT_EXACT, (char*)"000000");
         return val;
     }
@@ -205,43 +320,15 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     std::vector<chess::Move> moves = board.generate_legal_captures();
     if (moves.empty()) // no forced captures
     {
-        // no forced captures && not check => not forced move
-        // counter <= 0 so search depth reached, stop
-//        if (!board.is_check() && counter <= 0)
-//        {
-//            int val = eval.evaluate(board.turn);
-//            tt_obj.storeEval(val, counter, TT_EXACT, (char*)"000000");
-//            return val;
-//        }
-
-        // if didn't stop, move set is all legal moves
         moves = board.generate_legal_moves();
+        // MOVE ORDERING - sort the moves by transposition table entry hits
+        orderMovesByTT(moves);
+    }
+    else
+    {
+        orderMovesByMVVLVA(moves);
     }
 
-    // MOVE ORDERING - sort the moves by transposition table entry hits
-    std::sort(moves.begin(), moves.end(),
-        [this](const chess::Move &a, const chess::Move &b) {
-            int aEval = 1000;
-            tt_obj.push(a);
-            std::optional<TranspositionTable::TTEntry> ttEntry = tt_obj.loadEval();
-            if (ttEntry != std::nullopt)
-            {
-              aEval = ttEntry->eval;
-            }
-            tt_obj.pop();
-
-            int bEval = 1000;
-            tt_obj.push(b);
-            ttEntry = tt_obj.loadEval();
-            if (ttEntry != std::nullopt)
-            {
-              bEval = ttEntry->eval;
-            }
-            tt_obj.pop();
-
-            return aEval < bEval; // want WORST result for the other player first => BEST move for us
-        }
-    );
 
 #ifdef DEBUG2
     for (int i = 0; i < ((int)moves.size()); i++)
