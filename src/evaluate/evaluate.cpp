@@ -87,7 +87,7 @@ int Evaluate::mobility(const bool &is_endgame) {
 int Evaluate::evaluate(chess::Color color) {
     
     // game over
-    if (board.is_game_over(true)) {
+    if (board.is_game_over(true) || board.is_repetition(2)) {
         if (board.is_checkmate()) {
             if (board.turn == chess::WHITE) {
                 if (color == chess::WHITE) {

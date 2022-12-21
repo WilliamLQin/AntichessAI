@@ -123,6 +123,15 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     numSearched += 1;
 #endif
 
+    // Search stop: game over
+    // do this BEFORE transposition table load to notice threefold repetition
+    if (board.is_game_over(true))
+    {
+        int val = eval.evaluate(board.turn);
+        tt_obj.storeEval(val, counter, TT_EXACT, (char*)"000000");
+        return val;
+    }
+
     int alphaOriginal = alpha;
 
     // TRANSPOSITION TABLE LOAD - check cache
@@ -157,8 +166,8 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
         }
     }
 
-    // Search stop: game over
-    if (board.is_game_over(true) || counter <= 0)
+    // Search stop: end of search
+    if (counter <= 0)
     {
         int val = eval.evaluate(board.turn);
         tt_obj.storeEval(val, counter, TT_EXACT, (char*)"000000");
