@@ -29,68 +29,27 @@ int countSetBits(unsigned long long int n)
 int Evaluate::material(bool &is_endgame) {
     int ret = 0;
 
-    std::vector<chess::Square> wp = board.pieces(chess::PAWN, chess::WHITE);
-    std::vector<chess::Square> bp = board.pieces(chess::PAWN, chess::BLACK);
-    std::vector<chess::Square> wb = board.pieces(chess::BISHOP, chess::WHITE);
-    std::vector<chess::Square> bb = board.pieces(chess::BISHOP, chess::BLACK);
-    std::vector<chess::Square> wn = board.pieces(chess::KNIGHT, chess::WHITE);
-    std::vector<chess::Square> bn = board.pieces(chess::KNIGHT, chess::BLACK);
-    std::vector<chess::Square> wr = board.pieces(chess::ROOK, chess::WHITE);
-    std::vector<chess::Square> br = board.pieces(chess::ROOK, chess::BLACK);
-    std::vector<chess::Square> wq = board.pieces(chess::QUEEN, chess::WHITE);
-    std::vector<chess::Square> bq = board.pieces(chess::QUEEN, chess::BLACK);
-    std::vector<chess::Square> wk = board.pieces(chess::KING, chess::WHITE);
-    std::vector<chess::Square> bk = board.pieces(chess::KING, chess::BLACK);
-    
     int white_material = 0;
-
-    white_material += ((int)wp.size()) * 100;
-    white_material += ((int)wb.size()) * 300;
-    white_material += ((int)wn.size()) * 300;
-    white_material += ((int)wr.size()) * 500;
-    white_material += ((int)wq.size()) * 900;
-
-    int black_material = 0;
-    
-    black_material += ((int)bp.size()) * 100;
-    black_material += ((int)bb.size()) * 300;
-    black_material += ((int)bn.size()) * 300;
-    black_material += ((int)br.size()) * 500;
-    black_material += ((int)bq.size()) * 900;
-
-    // 13 points of material or less (not including pawns)
-    is_endgame = (white_material - ((int)wp.size()) * 100) <= 1300 && (black_material - ((int)bp.size()) * 100) <= 1300;
-
-    ret = white_material - black_material;
-
-    white_material = 0;
 
     white_material += (countSetBits(board.bishops & board.occupied_co[chess::WHITE])) * 300;
     white_material += (countSetBits(board.knights & board.occupied_co[chess::WHITE])) * 300;
     white_material += (countSetBits(board.rooks & board.occupied_co[chess::WHITE])) * 500;
     white_material += (countSetBits(board.queens & board.occupied_co[chess::WHITE])) * 900;
 
-    black_material = 0;
+    int black_material = 0;
 
     black_material += (countSetBits(board.bishops & board.occupied_co[chess::BLACK])) * 300;
     black_material += (countSetBits(board.knights & board.occupied_co[chess::BLACK])) * 300;
     black_material += (countSetBits(board.rooks & board.occupied_co[chess::BLACK])) * 500;
     black_material += (countSetBits(board.queens & board.occupied_co[chess::BLACK])) * 900;
 
-    bool new_is_endgame = white_material <= 1300 && black_material <= 1300;
+    // 13 points of material or less (not including pawns)
+    is_endgame = white_material <= 1300 && black_material <= 1300;
 
     white_material += (countSetBits(board.pawns & board.occupied_co[chess::WHITE])) * 100;
     black_material += (countSetBits(board.pawns & board.occupied_co[chess::BLACK])) * 100;
 
-    int new_eval = white_material - black_material;
-
-    std::cout << "old eval: " << ret << " endgame? " << is_endgame
-        << " new eval: " << new_eval << " endgame? " << new_is_endgame << std::endl;
-
-    if (ret != new_eval || is_endgame != new_is_endgame)
-    {
-        exit(1);
-    }
+    ret = white_material - black_material;
 
     return ret;
 }
