@@ -12,7 +12,7 @@ class Timer {
     constexpr static std::chrono::milliseconds ALLOTTED_TIME = std::chrono::milliseconds(3*60*1000);
     constexpr static std::chrono::milliseconds LEEWAY_TIME = std::chrono::milliseconds(100);
 
-    std::chrono::milliseconds timePerTurn = std::chrono::milliseconds (20000);
+    std::chrono::milliseconds timePerTurn = std::chrono::milliseconds (3000);
     int turnCount = 0;
     std::chrono::milliseconds usedTime;
     std::chrono::steady_clock::time_point startTime;
