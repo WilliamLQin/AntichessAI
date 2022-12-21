@@ -135,34 +135,43 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     int alphaOriginal = alpha;
 
     // TRANSPOSITION TABLE LOAD - check cache
+    std::optional<chess::Move> bestResponse = std::nullopt;
     std::optional<TranspositionTable::TTEntry> ttEntry = tt_obj.loadEval();
-    if (ttEntry != std::nullopt && ttEntry->depth >= counter)
+    if (ttEntry != std::nullopt)
     {
 #ifdef DEBUG
         ttHits += 1;
 #endif
-        if (ttEntry->nodeType == TT_EXACT) // EXACT
+        if (ttEntry->depth >= counter)
         {
-            return ttEntry->eval;
-        }
-        else if (ttEntry->nodeType == TT_BETA) // LOWER BOUND
-        {
-            if (ttEntry->eval > alpha) // can raise the lower bound?
+            if (ttEntry->nodeType == TT_EXACT) // EXACT
             {
-                alpha = ttEntry->eval;
+                return ttEntry->eval;
             }
-        }
-        else if (ttEntry->nodeType == TT_ALPHA) // UPPER BOUND
-        {
-            if (ttEntry->eval < beta) // can lower the upper bound?
+            else if (ttEntry->nodeType == TT_BETA) // LOWER BOUND
             {
-                beta = ttEntry->eval;
+                if (ttEntry->eval > alpha) // can raise the lower bound?
+                {
+                    alpha = ttEntry->eval;
+                }
+            }
+            else if (ttEntry->nodeType == TT_ALPHA) // UPPER BOUND
+            {
+                if (ttEntry->eval < beta) // can lower the upper bound?
+                {
+                    beta = ttEntry->eval;
+                }
+            }
+
+            if (alpha >= beta)
+            {
+                return ttEntry->eval;
             }
         }
 
-        if (alpha >= beta)
+        if (strcmp(ttEntry->move_uci, "000000") != 0)
         {
-            return ttEntry->eval;
+            bestResponse = std::optional<chess::Move>(chess::Move::from_uci(ttEntry->move_uci));
         }
     }
 
@@ -214,9 +223,23 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     int bestEval = EVAL_MIN;
     int bestMoveIndex = 0;
     // DFS backtrack search: play move, recurse, unplay move
-    for (int i = 0; i < moves.size(); i++)
+    for (int i = -1; i < ((int)moves.size()); i++)
     {
-        tt_obj.push(moves[i]); // play move
+        if (i == -1)
+        {
+            if (bestResponse != std::nullopt)
+            {
+                tt_obj.push(bestResponse.value());
+            }
+            else
+            {
+                continue;
+            }
+        }
+        else
+        {
+            tt_obj.push(moves[i]); // play move
+        }
 
 //#ifdef DEBUG
 //        std::cout << move.uci() << " " << counter << " ";
@@ -254,7 +277,14 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
         nodeType = TT_BETA; // LOWERBOUND
     }
     // else EXACT
-    tt_obj.storeEval(bestEval, counter, nodeType, moves[bestMoveIndex].uci().c_str());
+
+    // bestResponse should be nonnull if bestMoveIndex == -1
+    tt_obj.storeEval(
+        bestEval,
+        counter,
+        nodeType,
+        bestMoveIndex == -1 ? bestResponse.value().uci().c_str() : moves[bestMoveIndex].uci().c_str()
+    );
 
     return alpha;
 }
