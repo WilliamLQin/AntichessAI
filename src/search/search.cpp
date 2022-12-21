@@ -60,7 +60,7 @@ chess::Move Search::best_move()
             int iterBestEval = EVAL_MIN;
 
             // First ply - look through each move and find the one with the best score
-            for (int i = 0; i < moves.size(); i++)
+            for (int i = 0; i < ((int)moves.size()); i++)
             {
                 tt_obj.push(moves[i]);
 //#ifdef DEBUG

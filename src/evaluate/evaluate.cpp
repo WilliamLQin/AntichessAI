@@ -26,22 +26,22 @@ int Evaluate::material(bool &is_endgame) {
     
     int white_material = 0;
 
-    white_material += wp.size() * 100;
-    white_material += wb.size() * 300;
-    white_material += wn.size() * 300;
-    white_material += wr.size() * 500;
-    white_material += wq.size() * 900;
+    white_material += ((int)wp.size()) * 100;
+    white_material += ((int)wb.size()) * 300;
+    white_material += ((int)wn.size()) * 300;
+    white_material += ((int)wr.size()) * 500;
+    white_material += ((int)wq.size()) * 900;
 
     int black_material = 0;
     
-    black_material += bp.size() * 100;
-    black_material += bb.size() * 300;
-    black_material += bn.size() * 300;
-    black_material += br.size() * 500;
-    black_material += bq.size() * 900;
+    black_material += ((int)bp.size()) * 100;
+    black_material += ((int)bb.size()) * 300;
+    black_material += ((int)bn.size()) * 300;
+    black_material += ((int)br.size()) * 500;
+    black_material += ((int)bq.size()) * 900;
 
     // 13 points of material or less (not including pawns)
-    is_endgame = (white_material - wp.size() * 100) <= 1300 && (black_material - bp.size() * 100) <= 1300;
+    is_endgame = (white_material - ((int)wp.size()) * 100) <= 1300 && (black_material - ((int)bp.size()) * 100) <= 1300;
 
     ret = white_material - black_material;
     return ret;
