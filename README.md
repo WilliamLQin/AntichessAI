@@ -4,18 +4,17 @@ AI to play forced capture chess, but we still want to win
 
 Created for CO 456 project
 
-## To Run normally
+## Build and run
 
-from root folder  
+To compile for the CO 456 tournament, navigate to the root folder and run:
 `cmake . -DDEBUG=OFF -DCLI_MODE=OFF -DLICHESS_MODE=OFF`  
 `make`  
 `./AntichessAI`
 
-(Or optionally for CLI: `cmake . -DCLI_MODE=ON`)  
-(Or optionally for Debugging: `cmake . -DDEBUG=OFF`)  
-commands above can also be combined using multiple flags similar to line 10  
-`make`  
-`./AntichessAI`
+Options explanation:
+- `-DCLI_MODE=ON` enables CLI mode (prompts, etc.)  
+- `-DDEBUG=ON` enables debug output (lines, evaluation, search depth, etc.)  
+- `-DLICHESS_MODE=ON` enables lichess (colour passed in as stdin)
 
 ## References
 
