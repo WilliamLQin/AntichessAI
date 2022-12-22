@@ -85,8 +85,8 @@ void play_game(std::string cli_input) {
 
     std::vector<chess::Move> openingWhite = { chess::Move::from_uci("h2h3"), chess::Move::from_uci("b2b3") };
     std::vector<chess::Move> openingBlack = { chess::Move::from_uci("h7h6"), chess::Move::from_uci("b7b6") };
-    int openingIndex = 0;
-    int TOTAL_OPENING_MOVES = 2;
+    int openingIndex = 2;
+    int TOTAL_OPENING_MOVES[2] = { 2, 2 }; // black, white
 
     chess::Color color = (input == "black" ? chess::BLACK : chess::WHITE);
 
@@ -110,7 +110,7 @@ void play_game(std::string cli_input) {
         timer.startTurn();
 
         chess::Move ai_move = chess::Move::null();
-        if (openingIndex < TOTAL_OPENING_MOVES)
+        if (openingIndex < TOTAL_OPENING_MOVES[color])
         {
             ai_move = color == chess::WHITE ? openingWhite[openingIndex] : openingBlack[openingIndex];
             openingIndex += 1;
