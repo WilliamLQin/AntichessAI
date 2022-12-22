@@ -21,6 +21,7 @@ void Search::walkLine()
     else
     {
         std::cout << "(" << ttEntry->eval << ", " << ttEntry->depth << ", " << ttEntry->nodeType << ")";
+        std::cout << " q: " << quiesce(0, 0, EVAL_MIN, EVAL_MAX);
     }
 }
 
@@ -191,12 +192,12 @@ int Search::quiesce(int counter, int moves_pushed, int alpha, int beta)
 
     if (val >= beta)
     {
-        return val;
+        return beta;
     }
-    if (val > alpha)
-    {
-        alpha = val;
-    }
+//    if (val > alpha)
+//    {
+//        alpha = val;
+//    }
 
     std::vector<chess::Move> moves = board.generate_legal_captures();
     if (moves.empty())
@@ -222,7 +223,7 @@ int Search::quiesce(int counter, int moves_pushed, int alpha, int beta)
         // alpha-beta pruning
         if (alpha >= beta)
         {
-            break;
+            return beta;
         }
     }
 
@@ -293,28 +294,10 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     // Search stop: end of search
     if (counter <= 0)
     {
-        int val = quiesce(counter, moves_pushed, alpha, beta);
+        int val = quiesce(counter, moves_pushed, EVAL_MIN, EVAL_MAX);
         tt_obj.storeEval(val, counter, TT_EXACT, (char*)"000000");
         return val;
     }
-
-    // currently performing QUIESCENCE SEARCH (i.e. searching down forced moves after a capture)
-//    if (counter < 0) {
-//        // For quiescence search, we want to calculate static evaluation at every node
-//        // to do some alpha beta pruning
-//        int value = eval.evaluate(board.turn);
-////        tt_obj.storeEval(value, searchDepth - counter, 'q', (char*)"000000");
-////        return value;
-//        if (value >= beta)
-//        {
-//            tt_obj.storeEval(value, searchDepth - counter, 'q', (char*)"000000");
-//            return beta;
-//        }
-//        if (value > alpha)
-//        {
-//            alpha = value;
-//        }
-//    }
 
     // check if there are any forced captures
     std::vector<chess::Move> moves = board.generate_legal_captures();
