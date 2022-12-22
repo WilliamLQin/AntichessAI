@@ -2,11 +2,12 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: python-chess
+title: AntichessAI
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
 type: software
 authors:
-  - given-names: Niklas Fiekas
-    name-particle: niklasf
+  - given-names: William Qin
+  - given-names: Bryan Au
+  - given-names: Talia Wang

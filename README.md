@@ -12,10 +12,12 @@ To compile for the CO 456 tournament, navigate to the root folder and run:
 `./AntichessAI`
 
 Options explanation:
-- `-DCLI_MODE=ON` enables CLI mode (prompts, etc.)  
-- `-DDEBUG=ON` enables debug output (lines, evaluation, search depth, etc.)  
+
+- `-DCLI_MODE=ON` enables CLI mode (prompts, etc.)
+- `-DDEBUG=ON` enables debug output (lines, evaluation, search depth, etc.)
 - `-DLICHESS_MODE=ON` enables lichess (colour passed in as stdin)
 
 ## References
 
-src/cpp-chess sourced from https://github.com/pjpuzzler/cpp-chess
+Niklas Fiekas, python-chess, (2022), GitHub repository,  
+https://github.com/niklasf/python-chess
