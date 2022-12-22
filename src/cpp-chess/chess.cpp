@@ -1723,6 +1723,8 @@ namespace chess
 
         this->turn = board.turn;
         this->castling_rights = board.castling_rights;
+        this->has_castled[0] = board.has_castled[0];
+        this->has_castled[1] = board.has_castled[1];
         this->ep_square = board.ep_square;
         this->halfmove_clock = board.halfmove_clock;
         this->fullmove_number = board.fullmove_number;
@@ -1745,6 +1747,8 @@ namespace chess
 
         board.turn = this->turn;
         board.castling_rights = this->castling_rights;
+        board.has_castled[0] = this->has_castled[0];
+        board.has_castled[1] = this->has_castled[1];
         board.ep_square = this->ep_square;
         board.halfmove_clock = this->halfmove_clock;
         board.fullmove_number = this->fullmove_number;
@@ -2777,6 +2781,8 @@ namespace chess
         bool castling = *piece_type == KING && this->occupied_co[this->turn] & to_bb;
         if (castling)
         {
+            has_castled[this->turn] = true;
+
             bool a_side = square_file(move.to_square) < square_file(move.from_square);
 
             this->_remove_piece_at(move.from_square);

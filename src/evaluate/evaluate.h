@@ -17,6 +17,9 @@ private:
     int material(bool &is_endgame);
     int mobility(const bool &is_endgame);
     int piece_positions(const bool &is_endgame);
+    int check_file_for_pawns(chess::Square starting_square, chess::Square king_square, chess::Color color);
+    int pawn_shield();
+    int king_safety();
 };
 
 #endif //ANTICHESSAI_EVALUATE_H
