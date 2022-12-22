@@ -6,7 +6,7 @@ Created for CO 456 project
 
 ## Build and run
 
-To compile for the CO 456 tournament, navigate to the root folder and run:
+To compile for the CO 456 tournament, navigate to the root folder and run:  
 `cmake . -DDEBUG=OFF -DCLI_MODE=OFF -DLICHESS_MODE=OFF`  
 `make`  
 `./AntichessAI`
