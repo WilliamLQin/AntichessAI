@@ -242,7 +242,7 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     // we want to avoid repeating positions
     if (board.is_repetition(2))
     {
-        return board.turn == myColor ? -100 : 100;
+        return board.turn == myColor ? -300 : 300;
     }
     // Search stop: game over
     if (board.is_game_over(true))
