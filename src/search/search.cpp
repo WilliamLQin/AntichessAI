@@ -10,7 +10,7 @@ long long int ttHits = 0;
 void Search::walkLine()
 {
     std::optional<TranspositionTable::TTEntry> ttEntry = tt_obj.loadEval();
-    if (ttEntry != std::nullopt && strcmp(ttEntry->move_uci, "000000") != 0 && !board.is_game_over(true))
+    if (ttEntry != std::nullopt && ttEntry->move_uci[0] != '0' && !board.is_game_over(true))
     {
         chess::Move nextMove = chess::Move::from_uci(ttEntry->move_uci);
         std::cout << "(" << ttEntry->eval << ", " << ttEntry->depth << ", " << ttEntry->nodeType << ")" << "->" << ttEntry->move_uci << " ";
@@ -239,12 +239,16 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     numSearched += 1;
 #endif
 
+    // we want to avoid repeating positions
+    if (board.is_repetition(2))
+    {
+        return board.turn == myColor ? -100 : 100;
+    }
     // Search stop: game over
-    // do this BEFORE transposition table load to notice threefold repetition
     if (board.is_game_over(true))
     {
         int val = eval.evaluate(board.turn);
-        tt_obj.storeEval(val, counter, TT_EXACT, (char*)"000000");
+        tt_obj.storeEval(val, counter, TT_EXACT, chess::Move::null().uci().c_str());
         return val;
     }
 
@@ -285,7 +289,7 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
             }
         }
 
-        if (strcmp(ttEntry->move_uci, "000000") != 0)
+        if (ttEntry->move_uci[0] != '0')
         {
             bestResponse = std::optional<chess::Move>(chess::Move::from_uci(ttEntry->move_uci));
         }
@@ -295,7 +299,7 @@ int Search::alphaBeta(int counter, int moves_pushed, int alpha, int beta)
     if (counter <= 0)
     {
         int val = quiesce(counter, moves_pushed, EVAL_MIN, EVAL_MAX);
-        tt_obj.storeEval(val, counter, TT_EXACT, (char*)"000000");
+        tt_obj.storeEval(val, counter, TT_EXACT, chess::Move::null().uci().c_str());
         return val;
     }
 

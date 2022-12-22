@@ -59,9 +59,6 @@ void play_game(std::string cli_input) {
     chess::Board board;
     Timer timer;
 
-    TranspositionTable tt_obj(board);
-    Search search(board, timer, tt_obj);
-
     std::string input;
 
 #ifdef CLI_MODE
@@ -85,9 +82,19 @@ void play_game(std::string cli_input) {
     std::cout << std::endl << "Starting board:" << std::endl;
     std::cout << std::string(board) << std::endl << std::endl;
 #endif
+
+    std::vector<chess::Move> openingWhite = { chess::Move::from_uci("h2h3"), chess::Move::from_uci("b2b3") };
+    std::vector<chess::Move> openingBlack = { chess::Move::from_uci("h7h6"), chess::Move::from_uci("b7b6") };
+    int openingIndex = 0;
+    int TOTAL_OPENING_MOVES = 2;
+
+    chess::Color color = (input == "black" ? chess::BLACK : chess::WHITE);
+
+    TranspositionTable tt_obj(board);
+    Search search(board, timer, tt_obj, color);
     
     // player makes a move first
-    if (input == "black") {
+    if (color == chess::BLACK) {
         playerTurn(board, tt_obj);
     }
 
@@ -102,7 +109,16 @@ void play_game(std::string cli_input) {
         // AI MOVE
         timer.startTurn();
 
-        chess::Move ai_move = search.best_move();
+        chess::Move ai_move = chess::Move::null();
+        if (openingIndex < TOTAL_OPENING_MOVES)
+        {
+            ai_move = color == chess::WHITE ? openingWhite[openingIndex] : openingBlack[openingIndex];
+            openingIndex += 1;
+        }
+        else
+        {
+            ai_move = search.best_move();
+        }
         tt_obj.push(ai_move);
 
 #ifdef CLI_MODE
