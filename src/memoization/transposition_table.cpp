@@ -10,6 +10,10 @@ TranspositionTable::TranspositionTable(chess::Board &b) : board(b), hashStack(10
 {
     // Allocate tt on heap if needed
     tt = new struct TTEntry[TT_SIZE];
+    for (size_t i = 0; i < TT_SIZE; i += 1)
+    {
+        tt[i] = {0, 0, 0, 'x', "\0\0\0\0\0\0"};
+    }
 
     // initialize current hash
     computeHashFromScratch();

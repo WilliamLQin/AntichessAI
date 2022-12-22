@@ -3,10 +3,33 @@
 //
 
 #include "timer.h"
+#ifdef DEBUG
 #include <iostream>
+#endif
 
 void Timer::startTurn() {
     startTime = std::chrono::steady_clock::now();
+    if (usedTime > std::chrono::seconds(90))
+    {
+        timePerTurn = std::chrono::milliseconds(3000);
+    }
+    else if (usedTime > std::chrono::seconds(150))
+    {
+        timePerTurn = std::chrono::milliseconds(2000);
+    }
+    else if (usedTime > std::chrono::seconds(170))
+    {
+        timePerTurn = std::chrono::milliseconds(1000);
+    }
+    else if (usedTime > std::chrono::seconds(175))
+    {
+        timePerTurn = std::chrono::milliseconds(500);
+    }
+    else if (usedTime > std::chrono::seconds(178))
+    {
+        timePerTurn = std::chrono::milliseconds(200);
+    }
+    turnCount += 1;
 }
 
 void Timer::endTurn() {
@@ -26,7 +49,7 @@ void Timer::checkOutOfTime(int depth) {
     std::chrono::milliseconds diff =
             std::chrono::duration_cast<std::chrono::milliseconds>(time - startTime);
 
-    if (diff + LEEWAY_TIME > TIME_PER_TURN) {
+    if (diff + LEEWAY_TIME > timePerTurn) {
         throw OutOfTime(depth);
     }
 }
